@@ -1,4 +1,4 @@
-package com.ednaldomartins.architecturecomponentapp
+package com.example.architecturecomponentapp
 
 import org.junit.Test
 
