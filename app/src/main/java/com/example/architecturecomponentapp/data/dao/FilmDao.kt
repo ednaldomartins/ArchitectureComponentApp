@@ -27,4 +27,11 @@ interface FilmDao {
     //listar todos os filmes por ordem alfabetica
     @Query("SELECT * FROM film_table ORDER BY name")
     fun filmList(): LiveData<List<Film>>    //usando liveData para att em tempo real
+
+    //listar todos os filmes por ordem alfabetica
+    @Query("SELECT * FROM film_table ORDER BY id")
+    fun filmListSortedById(): LiveData<List<Film>>    //usando liveData para att em tempo real
+
+    @Query("SELECT * FROM film_table ORDER BY id DESC LIMIT 1")
+    fun getLastFilm(): Film?
 }
