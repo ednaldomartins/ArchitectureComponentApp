@@ -9,15 +9,19 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 class FilmListFragment: Fragment() {
 
-    private lateinit var textView: TextView
+    private lateinit var mFilmList: RecyclerView
+    private lateinit var filmListAdapter: FilmListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
@@ -30,11 +34,18 @@ class FilmListFragment: Fragment() {
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
         val filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
 
+        // configurando RecyclerView
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
+        mFilmList.layoutManager = layoutManager
+        mFilmList.setHasFixedSize(true)
+
+
         Log.e("TESTE", "fragment no onCreateView List")
-        filmViewModel.databaseDao.filmListSortedById().observe(this, Observer {
+        filmViewModel.databaseDao.filmList().observe(this, Observer {
             Log.e("TESTE", "fragment no Observer List")
-            //teste pegando apenas o nome do ultimo filme adicionado
-            textView.text = it.last().name
+            // configurando adapter do RecyclerView
+            filmListAdapter = FilmListAdapter(it, activity)
+            mFilmList.adapter = filmListAdapter
         })
 
         return view
@@ -42,6 +53,6 @@ class FilmListFragment: Fragment() {
 
     private fun initViews(v: View) {
         Log.e("TESTE", "fragment in initViews")
-        textView = v.findViewById(R.id.film_list_text)
+        mFilmList = v.findViewById(R.id.film_list_recycle_view)
     }
 }
