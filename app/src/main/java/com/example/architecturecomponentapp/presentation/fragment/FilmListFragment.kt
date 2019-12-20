@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.database.FilmDatabase
+import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter

@@ -1,11 +1,11 @@
-package com.example.architecturecomponentapp.data.database
+package com.example.architecturecomponentapp.data.database.local
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.ednaldomartins.architecturecomponentapp.data.dao.FilmDao
-import com.ednaldomartins.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.dao.FilmDao
+import com.example.architecturecomponentapp.data.entity.Film
 
 @Database (entities = [Film::class], version = 1, exportSchema = false)
 abstract class FilmDatabase: RoomDatabase() {
@@ -18,7 +18,8 @@ abstract class FilmDatabase: RoomDatabase() {
 
         fun getInstance (context: Context): FilmDatabase {
             synchronized(this) {
-                var instance = INSTANCE
+                var instance =
+                    INSTANCE
 
                 if (instance == null) {
                     instance = Room.databaseBuilder(context.applicationContext, FilmDatabase::class.java, "filme_database")

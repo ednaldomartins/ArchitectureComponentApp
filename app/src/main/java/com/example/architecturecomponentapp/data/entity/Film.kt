@@ -1,4 +1,4 @@
-package com.ednaldomartins.architecturecomponentapp.data.entity
+package com.example.architecturecomponentapp.data.entity
 
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo

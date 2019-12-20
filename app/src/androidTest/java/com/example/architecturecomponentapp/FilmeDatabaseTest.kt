@@ -1,18 +1,16 @@
 package com.example.architecturecomponentapp
 
-import android.content.Context
 import androidx.room.Room
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.ednaldomartins.architecturecomponentapp.data.dao.FilmDao
-import com.ednaldomartins.architecturecomponentapp.data.entity.Film
-import com.example.architecturecomponentapp.data.database.FilmDatabase
+import com.example.architecturecomponentapp.data.dao.FilmDao
+import com.example.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import org.junit.After
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
 import org.junit.Before
 import java.io.IOException
 

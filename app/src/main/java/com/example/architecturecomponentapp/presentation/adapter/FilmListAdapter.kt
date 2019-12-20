@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ednaldomartins.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.entity.Film
 import com.example.architecturecomponentapp.R
 
 class FilmListAdapter (var filmList: List<Film>, context: Context?)

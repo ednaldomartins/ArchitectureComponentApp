@@ -1,9 +1,9 @@
-package com.ednaldomartins.architecturecomponentapp.data.dao
+package com.example.architecturecomponentapp.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
-import com.ednaldomartins.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.entity.Film
 
 @Dao
 interface FilmDao {

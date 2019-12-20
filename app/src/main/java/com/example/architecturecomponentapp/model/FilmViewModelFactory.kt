@@ -3,7 +3,7 @@ package com.example.architecturecomponentapp.model
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.ednaldomartins.architecturecomponentapp.data.dao.FilmDao
+import com.example.architecturecomponentapp.data.dao.FilmDao
 
 class FilmViewModelFactory (
     private val databaseDao: FilmDao,

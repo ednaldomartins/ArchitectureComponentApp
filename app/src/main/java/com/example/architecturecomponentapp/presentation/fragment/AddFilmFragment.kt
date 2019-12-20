@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.database.FilmDatabase
+import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
 

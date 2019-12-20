@@ -3,8 +3,8 @@ package com.example.architecturecomponentapp.model
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.ednaldomartins.architecturecomponentapp.data.dao.FilmDao
-import com.ednaldomartins.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.dao.FilmDao
+import com.example.architecturecomponentapp.data.entity.Film
 import kotlinx.coroutines.*
 
 class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewModel (app) {
