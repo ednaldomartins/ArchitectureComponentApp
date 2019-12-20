@@ -41,16 +41,19 @@ dependencies {
     /** ViewModel and LiveData */
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     // alternatively - just ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"// For Kotlin use lifecycle-viewmodel-ktx
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+// For Kotlin use lifecycle-viewmodel-ktx
     // alternatively - just LiveData
     //implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     // alternatively - Lifecycles only (no ViewModel or LiveData). Some UI AndroidX libraries use this lightweight import for Lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
-    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"// For Kotlin use kapt instead of annotationProcessor
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+// For Kotlin use kapt instead of annotationProcessor
 
     /** Room */
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"// For Kotlin use kapt instead of annotationProcessor
+    kapt "androidx.room:room-compiler:$room_version"
+// For Kotlin use kapt instead of annotationProcessor
 
     /** Coroutines */
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
@@ -63,5 +66,12 @@ dependencies {
 
     /** RecyclerView */
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    /** Retrofit */
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+    // usar moshi ou gson
+    implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$version_retrofit"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
 }
