@@ -4,13 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.viewpager.widget.ViewPager
-import com.example.architecturecomponentapp.R
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 
+import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.presentation.fragment.AddFilmFragment
+import com.example.architecturecomponentapp.presentation.fragment.ApiFilmListFragment
 import com.example.architecturecomponentapp.presentation.fragment.FilmListFragment
 
 
@@ -24,8 +25,9 @@ class MainActivity : AppCompatActivity() {
 
         val fragmentAdapter = FragmentPagerItemAdapter(
             supportFragmentManager, FragmentPagerItems.with(this)
+                .add("Lista do Room", FilmListFragment::class.java)
+                .add("Lista da API", ApiFilmListFragment::class.java)
                 .add("Adicionar Filme", AddFilmFragment::class.java)
-                .add("Lista de Filmes", FilmListFragment::class.java)
                 .create()
         )
         val viewPager: ViewPager = findViewById(R.id.main_view_pager)
