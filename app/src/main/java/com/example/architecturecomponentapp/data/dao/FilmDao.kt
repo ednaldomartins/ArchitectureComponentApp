@@ -17,7 +17,7 @@ interface FilmDao {
     fun deleteFilm (vararg film: Film)
 
     //retorna o filme com o mesmo nome
-    @Query("SELECT * FROM film_table WHERE name = :name")
+    @Query("SELECT * FROM film_table WHERE title = :name")
     fun get(name: String): Film
 
     //limpar tabela
@@ -25,7 +25,7 @@ interface FilmDao {
     fun clear()
 
     //listar todos os filmes por ordem alfabetica
-    @Query("SELECT * FROM film_table ORDER BY name")
+    @Query("SELECT * FROM film_table ORDER BY title")
     fun filmList(): LiveData<List<Film>>    //usando liveData para att em tempo real
 
     //listar todos os filmes por ordem alfabetica

@@ -32,12 +32,14 @@ class ApiFilmListFragment: Fragment() {
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
         val filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
 
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
+        filmViewModel.requestFilmApiService()
 
         Log.e("TESTE", "fragment no onCreateView List")
-        filmViewModel.databaseDao.filmList().observe(this, Observer {
+        filmViewModel.resp.observe(this, Observer {
             Log.e("TESTE", "fragment no Observer List")
-
+            //filmViewModel.requestFilmApiService()
+            val t = filmViewModel.resp.value?.title
+            text.text = t
         })
 
         return view

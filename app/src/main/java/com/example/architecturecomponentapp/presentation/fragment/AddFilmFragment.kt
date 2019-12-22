@@ -58,11 +58,11 @@ class AddFilmFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         Log.e("TESTE", "fragment no onClick")
         if (v?.id == R.id.add_film_button_add) {
-             Log.e("TESTE", "fragment no onClick > IF")
-             filmViewModel?.insertFilm(
-                 add_film_edit_text_name.text.toString(),
-                 add_film_edit_text_year.text.toString().toShort()
-             )
+            Log.e("TESTE", "fragment no onClick > IF")
+            filmViewModel?.insertFilm(
+                add_film_edit_text_name.text.toString(),
+                add_film_edit_text_year.text.toString()
+            )
         }
 
     }

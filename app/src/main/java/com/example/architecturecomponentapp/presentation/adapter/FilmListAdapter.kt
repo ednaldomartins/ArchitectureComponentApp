@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.architecturecomponentapp.data.entity.Film
 import com.example.architecturecomponentapp.R
+import com.example.architecturecomponentapp.data.entity.Film
 
 class FilmListAdapter (var filmList: List<Film>, context: Context?)
     : RecyclerView.Adapter<FilmListAdapter.MyViewHolder>() {
@@ -29,19 +29,19 @@ class FilmListAdapter (var filmList: List<Film>, context: Context?)
         val film: Film = filmList.get(position)
         //falta a capa do filme
         holder.filmImageView.setImageResource(R.drawable.ic_movie_black_24dp)
-        holder.filmName.text = film.name
-        holder.filmYear.text = film.year.toString()
+        holder.filmName.text = film.title
+        holder.filmYear.text = film.releaseData
     }
 
-        class MyViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            lateinit var filmImageView: ImageView
-            lateinit var filmName: TextView
-            lateinit var filmYear: TextView
+    class MyViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        lateinit var filmImageView: ImageView
+        lateinit var filmName: TextView
+        lateinit var filmYear: TextView
 
-            init {
-                filmImageView = v.findViewById(R.id.adapter_film_list_image_film)
-                filmName = v.findViewById(R.id.adapter_film_list_text_name)
-                filmYear = v.findViewById(R.id.adapter_film_list_text_year)
-            }
+        init {
+            filmImageView = v.findViewById(R.id.adapter_film_list_image_film)
+            filmName = v.findViewById(R.id.adapter_film_list_text_name)
+            filmYear = v.findViewById(R.id.adapter_film_list_text_year)
+        }
     }
 }
