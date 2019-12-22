@@ -19,26 +19,23 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     private var viewModelJob = Job()
     private val uiCoroutineScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     private var response = MutableLiveData<Film>()
-    val resp: LiveData<Film> get() = response   //get
+    val resp: LiveData<Film> get() = response
 
     fun requestFilmApiService () {
-        FilmsApi.filmApiService.callFilmsApi().enqueue( object : Callback<Film> {
+        FilmsApi.retrofitService.callFilmsApi().enqueue( object : Callback<Film> {
             override fun onFailure(call: Call<Film>, t: Throwable) {
-                response.value = Film(-1,"sem retorno", -1)
+                response.value = Film(-1,"sem retorno", "-1")
             }
 
             override fun onResponse(call: Call<Film>, r: Response<Film>) {
-                if (r.isSuccessful) {
-                    response.value = r.body()
-                    val x = response.value?.year //
-                }
+                response.value = r.body()
             }
         })
     }
 
     // inserir filme chamando funcao de suspensao
-    fun insertFilm(name: String, year: Short) {
-        uiCoroutineScope.launch { insert( Film(name = name, year = year) ) }
+    fun insertFilm(name: String, date: String) {
+        uiCoroutineScope.launch { insert( Film(title = name, releaseData = date) ) }
     }
 
     //funcao de suspensao para inserir film no BD
