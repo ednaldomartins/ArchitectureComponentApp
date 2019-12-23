@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,10 +15,12 @@ import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 class ApiFilmListFragment: Fragment() {
 
-    private lateinit var text: TextView
+    private lateinit var mFilmListApi: RecyclerView
+    private lateinit var filmListAdapter: FilmListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
@@ -32,21 +33,31 @@ class ApiFilmListFragment: Fragment() {
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
         val filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
 
-        filmViewModel.requestFilmApiService()
+        // configurando RecyclerView
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
+        mFilmListApi.layoutManager = layoutManager
+        mFilmListApi.setHasFixedSize(true)
 
-        Log.e("TESTE", "fragment no onCreateView List")
-        filmViewModel.resp.observe(this, Observer {
-            Log.e("TESTE", "fragment no Observer List")
-            //filmViewModel.requestFilmApiService()
-            val t = filmViewModel.resp.value?.title
-            text.text = t
+        // chamada da lista de films da api
+        filmViewModel.requestFilmListApiService()
+
+        Log.e("TESTE", "fragment API no onCreateView List")
+        filmViewModel.responseFilmList.observe(this, Observer {
+            Log.e("TESTE", "fragment API no Observer List")
+            //filmViewModel.requestFilmListApiService()
+            //val t = filmViewModel.responseFilm.value?.title
+            // configurando adapter do RecyclerView
+            it.movies?.let { list ->
+                filmListAdapter = FilmListAdapter(list, activity)
+                mFilmListApi.adapter = filmListAdapter
+            }
         })
 
         return view
     }
 
     private fun initViews(v: View) {
-        Log.e("TESTE", "fragment in initViews")
-        text = v.findViewById(R.id.api_film_list_text)
+        Log.e("TESTE", "fragment API in initViews")
+        mFilmListApi = v.findViewById(R.id.film_list_api_recycle_view)
     }
 }
