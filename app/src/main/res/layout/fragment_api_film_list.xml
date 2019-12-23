@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".presentation.fragment.ApiFilmListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-            android:id="@+id/api_film_list_text"
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/film_list_api_recycle_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="teste api" />
+            android:scrollbars="vertical"/>
 
 </FrameLayout>
