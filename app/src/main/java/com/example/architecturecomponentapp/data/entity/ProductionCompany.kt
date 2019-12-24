@@ -1,14 +1,26 @@
 package com.example.architecturecomponentapp.data.entity
 
+import androidx.room.TypeConverter
 import com.squareup.moshi.Json
 
-class ProductionCompany (
-    @Json(name = "id")
-    var id: Long = -1L,
+class ProductionCompany {
+    companion object {
+        @TypeConverter
+        @Json(name = "id")
+        fun getId(id: Long): Long {
+            return id ?: 0L
+        }
 
-    @Json(name = "name")
-    var name: String = "",
+        @TypeConverter
+        @Json(name = "name")
+        fun getName(name: String): String {
+            return name ?: ""
+        }
 
-    @Json(name = "original_country")
-    var originalCountry: String = ""
-)
+        @TypeConverter
+        @Json(name = "original_country")
+        fun getoriginalCountry(originalCountry: String): String {
+            return originalCountry ?: ""
+        }
+    }
+}

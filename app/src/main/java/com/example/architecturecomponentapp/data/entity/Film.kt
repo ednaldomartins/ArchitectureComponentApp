@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.squareup.moshi.Json
 import java.io.Serializable
 
@@ -20,11 +21,12 @@ data class Film(
     @ColumnInfo(name = "release_date")
     @Json(name = "release_date")
     var releaseData: String = "????-??-??",
-
+/*
+    @TypeConverters(Genre::class)
     @ColumnInfo(name = "genres")
     @Json(name = "genres")
     var genres: Genre?,
-
+*/
     @ColumnInfo(name = "homepage")
     @Json(name = "homepage")
     var homepage: String = "www.google.com",
@@ -33,9 +35,9 @@ data class Film(
     @Json(name = "original_language")
     var originalLanguage: String = "",
 
-    @ColumnInfo(name = "overwiew")
-    @Json(name = "overwiew")
-    var overwiew: String = "",
+    @ColumnInfo(name = "overview")
+    @Json(name = "overview")
+    var overview: String = "",
 
     @ColumnInfo(name = "popularity")
     @Json(name = "popularity")
@@ -44,11 +46,12 @@ data class Film(
     @ColumnInfo(name = "poster_path")
     @Json(name = "poster_path")
     var posterPath: String = "",
-
+/*
+    @TypeConverters(ProductionCompany::class)
     @ColumnInfo(name = "production_company")
     @Json(name = "production_company")
     var productionCompany: ProductionCompany?,
-
+*/
     @ColumnInfo(name = "status")
     @Json(name = "status")
     var status: String = "",
