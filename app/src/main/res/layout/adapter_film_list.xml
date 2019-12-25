@@ -1,44 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="4sp"
-        android:paddingTop="8sp"
-        android:paddingBottom="8sp">
+        android:padding="4sp">
 
-    <ImageView
-            android:id="@+id/adapter_film_list_image_film"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:scaleType="center"
-            android:scaleX="1"
-            android:scaleY="1.3"
-            app:srcCompat="@drawable/ic_local_movies_24dp" />
+    <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorViewCard"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="4dp"
-            android:paddingStart="4dp">
-
-        <TextView
-                android:id="@+id/adapter_film_list_text_name"
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Nome"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
+                android:layout_height="150sp">
 
-        <TextView
-                android:id="@+id/adapter_film_list_text_year"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ano"
-                android:textColor="@android:color/black"
-                android:textSize="24sp" />
-    </LinearLayout>
-</LinearLayout>
+            <ImageView
+                    android:id="@+id/adapter_film_list_image_film"
+                    android:layout_width="@dimen/poster_width"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@android:color/white"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_local_movies_24dp" />
+
+            <TextView
+                    android:id="@+id/adapter_film_list_text_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Título do Filme"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/title_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                    android:id="@+id/textViewRelease"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Lançamento:"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size"
+                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
+                    app:layout_constraintTop_toBottomOf="@+id/adapter_film_list_text_title" />
+
+            <TextView
+                    android:id="@+id/adapter_film_list_text_release_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="yyyy-mm-dd"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size"
+                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewRelease" />
+
+            <TextView
+                    android:id="@+id/textViewPopularity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Popularidade: "
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size"
+                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
+                    app:layout_constraintTop_toBottomOf="@+id/adapter_film_list_text_release_date" />
+
+            <TextView
+                    android:id="@+id/adapter_film_list_text_popularity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:text="0"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size"
+                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewPopularity" />
+
+            <TextView
+                    android:id="@+id/adapter_film_list_text_vote_average"
+                    android:layout_width="60dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="00.0"
+                    android:textColor="@color/colorAverage"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/adapter_film_list_text_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

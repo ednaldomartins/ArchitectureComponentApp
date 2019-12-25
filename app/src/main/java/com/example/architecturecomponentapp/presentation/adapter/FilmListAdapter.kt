@@ -21,27 +21,32 @@ class FilmListAdapter (var filmList: List<Film>, context: Context?)
     }
 
     override fun getItemCount(): Int {
-        return filmList.size!!
+        return filmList.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
         val film: Film = filmList.get(position)
         //falta a capa do filme
-        holder.filmImageView.setImageResource(R.drawable.ic_movie_black_24dp)
-        holder.filmName.text = film.title
-        holder.filmYear.text = film.releaseData
+        //holder.filmPoster.setImageResource(R.drawable.ic_movie_black_24dp)
+        holder.filmTitle.text = film.title
+        holder.filmReleaseDate.text = film.releaseData
+        holder.filmPopularity.text = film.popularity
+        holder.filmVoteAverage.text = film.voteAverage.toString()
     }
 
     class MyViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        lateinit var filmImageView: ImageView
-        lateinit var filmName: TextView
-        lateinit var filmYear: TextView
+        var filmPoster: ImageView
+        var filmTitle: TextView
+        var filmReleaseDate: TextView
+        var filmPopularity: TextView
+        var filmVoteAverage: TextView
 
         init {
-            filmImageView = v.findViewById(R.id.adapter_film_list_image_film)
-            filmName = v.findViewById(R.id.adapter_film_list_text_name)
-            filmYear = v.findViewById(R.id.adapter_film_list_text_year)
+            filmPoster = v.findViewById(R.id.adapter_film_list_image_film)
+            filmTitle = v.findViewById(R.id.adapter_film_list_text_title)
+            filmPopularity = v.findViewById(R.id.adapter_film_list_text_popularity)
+            filmReleaseDate = v.findViewById(R.id.adapter_film_list_text_release_date)
+            filmVoteAverage = v.findViewById(R.id.adapter_film_list_text_vote_average)
         }
     }
 }
