@@ -23,13 +23,13 @@
 
             <ImageView
                     android:id="@+id/adapter_film_list_image_film"
-                    android:layout_width="@dimen/poster_width"
-                    android:layout_height="0dp"
+                    android:layout_width="90dp"
+                    android:layout_height="135dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="@android:color/white"
-                    android:scaleType="centerInside"
+                    android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -42,6 +42,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
+                    android:maxLines="2"
                     android:text="Título do Filme"
                     android:textColor="@color/colorPrimaryText"
                     android:textSize="@dimen/title_size"
@@ -53,8 +54,8 @@
                     android:id="@+id/textViewRelease"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="Lançamento:"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="@dimen/text_size"
@@ -66,48 +67,48 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:text="yyyy-mm-dd"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size"
+                    app:layout_constraintStart_toEndOf="@+id/textViewRelease"
+                    app:layout_constraintTop_toBottomOf="@+id/adapter_film_list_text_title" />
+
+            <TextView
+                    android:id="@+id/textViewPopularity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:text="Vizualizações"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="@dimen/text_size"
+                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_text_popularity"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewRelease" />
+
+            <TextView
+                    android:id="@+id/adapter_film_list_text_popularity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:text="0"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="@dimen/text_size"
                     app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
                     app:layout_constraintTop_toBottomOf="@+id/textViewRelease" />
 
             <TextView
-                    android:id="@+id/textViewPopularity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:text="Popularidade: "
-                    android:textColor="@color/colorSecondaryText"
-                    android:textSize="@dimen/text_size"
-                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
-                    app:layout_constraintTop_toBottomOf="@+id/adapter_film_list_text_release_date" />
-
-            <TextView
-                    android:id="@+id/adapter_film_list_text_popularity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:text="0"
-                    android:textColor="@color/colorSecondaryText"
-                    android:textSize="@dimen/text_size"
-                    app:layout_constraintStart_toEndOf="@+id/adapter_film_list_image_film"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewPopularity" />
-
-            <TextView
                     android:id="@+id/adapter_film_list_text_vote_average"
                     android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:text="00.0"
-                    android:textColor="@color/colorAverage"
+                    android:textColor="@color/colorPrimaryBright"
                     android:textSize="30sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/adapter_film_list_text_title" />
+                    app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
