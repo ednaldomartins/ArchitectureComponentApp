@@ -1,7 +1,8 @@
 package com.example.architecturecomponentapp.data.database.remote
 
-import com.example.architecturecomponentapp.data.entity.Film
-import com.example.architecturecomponentapp.data.entity.MovieList
+import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.model.FilmsJson
+import com.example.architecturecomponentapp.model.Genres
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -22,20 +23,22 @@ private val  retrofit = Retrofit.Builder()
     .build()
 
 interface FilmApiService {
-    // clube da luta (500) nome teste
-    @GET("movie/550${Api.UNIQUE_KEY}")
-    fun callFilmsApi(): Deferred<Film>  //Defered no lugar de Call para coroutines (para aguardar o resultado sem bloquear outras tarefas)
+    // chamar lista de generos
+    @GET("genre/movie/list${Api.UNIQUE_KEY}${Api.LANGUAGE}")
+    fun callGenreMovieApi(): Deferred<Genres>
 
-    // chamar 1 unico filme usando o numero identificador
+    // chamar 1 unico filme usando o ID
     @GET("movie/{film}${Api.UNIQUE_KEY}")
-    fun callFilmApi(@Path("film") film: String): Deferred<Film>
+    fun callFilmApi(@Path("film") film: String): Deferred<FilmData>
 
     // chamar lista de filmes mais populares da API
-    @GET("movie/popular${Api.UNIQUE_KEY}")
-    fun callPopularFilmListApi(): Deferred<List<Film>>
-
     @GET("movie/popular${Api.UNIQUE_KEY}${Api.LANGUAGE}")
-    fun callPopularMovieListApi(): Deferred<MovieList>
+    fun callPopularMovieListApi(): Deferred<FilmsJson>
+
+    // chamar lista de filmes por categoria
+    @GET("list/{genre}${Api.UNIQUE_KEY}${Api.LANGUAGE}")
+    fun callMovieListByGenreApi (@Path("genre") genre: String): Deferred<FilmsJson>
+
 }
 
 object FilmsApi {
