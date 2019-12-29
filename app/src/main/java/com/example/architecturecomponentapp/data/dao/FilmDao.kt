@@ -3,22 +3,22 @@ package com.example.architecturecomponentapp.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
-import com.example.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.entity.FilmData
 
 @Dao
 interface FilmDao {
     @Insert(onConflict = IGNORE)
-    fun insertFilm (film: Film)
+    fun insertFilm (filmData: FilmData)
 
     @Update
-    fun updateFilm (film: Film)
+    fun updateFilm (filmData: FilmData)
 
     @Delete
-    fun deleteFilm (vararg film: Film)
+    fun deleteFilm (vararg filmData: FilmData)
 
     //retorna o filme com o mesmo nome
     @Query("SELECT * FROM film_table WHERE title = :name")
-    fun get(name: String): Film
+    fun get(name: String): FilmData
 
     //limpar tabela
     @Query("DELETE FROM film_table")
@@ -26,12 +26,12 @@ interface FilmDao {
 
     //listar todos os filmes por ordem alfabetica
     @Query("SELECT * FROM film_table ORDER BY title")
-    fun filmList(): LiveData<List<Film>>    //usando liveData para att em tempo real
+    fun filmList(): LiveData<List<FilmData>>    //usando liveData para att em tempo real
 
     //listar todos os filmes por ordem alfabetica
     @Query("SELECT * FROM film_table ORDER BY id")
-    fun filmListSortedById(): LiveData<List<Film>>    //usando liveData para att em tempo real
+    fun filmListSortedById(): LiveData<List<FilmData>>    //usando liveData para att em tempo real
 
     @Query("SELECT * FROM film_table ORDER BY id DESC LIMIT 1")
-    fun getLastFilm(): Film?
+    fun getLastFilm(): FilmData?
 }
