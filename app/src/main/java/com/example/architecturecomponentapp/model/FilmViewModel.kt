@@ -8,25 +8,29 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
-import com.example.architecturecomponentapp.data.database.remote.Api
 import com.example.architecturecomponentapp.data.database.remote.FilmsApi
-import com.example.architecturecomponentapp.data.entity.Film
-import com.example.architecturecomponentapp.data.entity.MovieList
+import com.example.architecturecomponentapp.data.entity.FilmData
 
 class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewModel (app) {
 
     // Threads
     private var viewModelJob = Job()
     private val uiCoroutineScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-    // Film
-    private var rFilm = MutableLiveData<Film>()
-    val responseFilm: LiveData<Film> get() = rFilm
-    // Film List
-    //private var rFilmList = MutableLiveData<List<Film>>()
-    //val responseFilmList: LiveData<List<Film>> get() = rFilmList
-//movie
-    private var rFilmList = MutableLiveData<MovieList>()
-    val responseFilmList: LiveData<MovieList> get() = rFilmList
+    // filme
+    private var rFilm = MutableLiveData<FilmData>()
+    val responseFilmData: LiveData<FilmData> get() = rFilm
+    // lista de filmes da API
+    private var rFilmList = MutableLiveData<FilmsJson>()
+    val responseFilmList: LiveData<FilmsJson> get() = rFilmList
+
+    private var listGenre: Array<Genres.Genre>? = null
+
+    init {
+        uiCoroutineScope.launch {
+            val request= FilmsApi.retrofitService.callGenreMovieApi()
+            listGenre = request.await().genreList
+        }
+    }
 
     fun requestFilmApiService () {
         uiCoroutineScope.launch {
@@ -37,9 +41,8 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
                 rFilm.value = listResult
             }
             catch (t: Throwable) {
-                rFilm.value = Film(-1,"sem retorno", "-1")
+                rFilm.value = FilmData(idDB = -1,title = "sem retorno")
             }
-
         }
     }
 
@@ -52,20 +55,19 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
                 rFilmList.value = listResult
             }
             catch (t: Throwable) {
-                //rFilmList.value = MovieList( LiveData<listOf( Film(title = "Sem retorno: ${t.message}"))> )
+                //rFilmList.value = FilmsJson( LiveData<listOf( FilmData(title = "Sem retorno: ${t.message}"))> )
             }
-
         }
     }
 
     // inserir filme chamando funcao de suspensao
     fun insertFilm(name: String, date: String) {
-        uiCoroutineScope.launch { insert( Film(title = name, releaseData = date) ) }
+        uiCoroutineScope.launch { insert( FilmData(title = name, releaseData = date) ) }
     }
 
-    //funcao de suspensao para inserir film no BD
-    private suspend fun insert (film: Film) {
-        withContext(Dispatchers.IO) { databaseDao.insertFilm(film) }
+    //funcao de suspensao para inserir filmData no BD
+    private suspend fun insert (filmData: FilmData) {
+        withContext(Dispatchers.IO) { databaseDao.insertFilm(filmData) }
     }
 
     override fun onCleared() {

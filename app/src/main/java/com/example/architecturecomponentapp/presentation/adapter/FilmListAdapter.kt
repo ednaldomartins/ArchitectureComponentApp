@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.remote.Api
-import com.example.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.model.FilmsJson
 
-class FilmListAdapter (private var filmList: List<Film>,private var context: Context?)
+class FilmListAdapter (private var filmList: List<FilmsJson.FilmJson>,private var context: Context?)
     : RecyclerView.Adapter<FilmListAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder{
@@ -28,7 +28,7 @@ class FilmListAdapter (private var filmList: List<Film>,private var context: Con
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val film: Film = filmList[position]
+        val film: FilmsJson.FilmJson = filmList[position]
 
         // se tivermos um caminho de uma foto salva, entao...
         if (film.posterPath != "") {
