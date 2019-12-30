@@ -1,7 +1,6 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
-import com.example.architecturecomponentapp.model.FilmViewModel
-import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 class FilmListFragment: Fragment() {
@@ -38,12 +36,12 @@ class FilmListFragment: Fragment() {
         mFilmList.layoutManager = layoutManager
         mFilmList.setHasFixedSize(true)
 
-
-        Log.e("TESTE", "fragment no onCreateView List")
         filmViewModel.databaseDao.filmList().observe(this, Observer {
-            Log.e("TESTE", "fragment no Observer List")
             // configurando adapter do RecyclerView
-            filmListAdapter = FilmListAdapter(it, activity)
+            filmListAdapter = FilmListAdapter(
+                activity,
+                arrayOf( FilmsJson.FilmJson(genres = Genres(emptyArray()), productionCompanies = ProductionCompanies(emptyArray())) ),
+                it)
             mFilmList.adapter = filmListAdapter
         })
 
@@ -51,7 +49,6 @@ class FilmListFragment: Fragment() {
     }
 
     private fun initViews(v: View) {
-        Log.e("TESTE", "fragment in initViews")
         mFilmList = v.findViewById(R.id.film_list_recycle_view)
     }
 }

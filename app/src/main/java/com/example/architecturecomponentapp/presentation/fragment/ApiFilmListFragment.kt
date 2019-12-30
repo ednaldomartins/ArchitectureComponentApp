@@ -1,7 +1,6 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,14 +40,10 @@ class ApiFilmListFragment: Fragment() {
         // chamada da lista de films da api
         filmViewModel.requestFilmListApiService()
 
-        Log.e("TESTE", "fragment API no onCreateView List")
         filmViewModel.responseFilmList.observe(this, Observer {
-            Log.e("TESTE", "fragment API no Observer List")
-            //filmViewModel.requestFilmListApiService()
-            //val t = filmViewModel.responseFilm.value?.title
             // configurando adapter do RecyclerView
             it.movies?.let { list ->
-                filmListAdapter = FilmListAdapter(list, activity)
+                filmListAdapter = FilmListAdapter(activity, list)
                 mFilmListApi.adapter = filmListAdapter
             }
         })
@@ -57,7 +52,6 @@ class ApiFilmListFragment: Fragment() {
     }
 
     private fun initViews(v: View) {
-        Log.e("TESTE", "fragment API in initViews")
         mFilmListApi = v.findViewById(R.id.film_list_api_recycle_view)
     }
 }

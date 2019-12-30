@@ -11,12 +11,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.remote.Api
+import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.FilmsJson
 
-class FilmListAdapter (private var filmList: List<FilmsJson.FilmJson>,private var context: Context?)
+class FilmListAdapter (
+    private var context: Context?,
+    private var filmListJson: Array<FilmsJson.FilmJson>,
+    private var filmListData: List<FilmData>? = null)
     : RecyclerView.Adapter<FilmListAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder{
+        //converter se a lista de filmes vier no tipo FilmJson
+        filmListData?.let {
+            for (i in it.indices)
+                filmListJson[i] = FilmAdapter.adaptDataToJson(it[i])
+        }
+
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.adapter_film_list, parent, false)
 
@@ -24,11 +34,11 @@ class FilmListAdapter (private var filmList: List<FilmsJson.FilmJson>,private va
     }
 
     override fun getItemCount(): Int {
-        return filmList.size
+        return filmListJson.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val film: FilmsJson.FilmJson = filmList[position]
+        val film: FilmsJson.FilmJson = filmListJson[position]
 
         // se tivermos um caminho de uma foto salva, entao...
         if (film.posterPath != "") {
