@@ -9,10 +9,10 @@ class FilmAdapter {
     companion object {
         fun adaptJsonToData (filmJson: FilmsJson.FilmJson) : FilmData{
             // converter array de genres para string
-            val genres = filmJson.genres?.genreList
+            val genres = filmJson.genres
             val genresString = convertGenreArrayToString(genres)
             // converter array de companies para string
-            val companies = filmJson.productionCompanies?.productionList
+            val companies = filmJson.productionCompanies
             val companiesString = convertCompanyArrayToString(companies)
             /*  apos a conversao, criamos o FilmData setando todos os paramentros do FilmJson
                 mais as duas strings convertidas para serem apresentadas na tela de detalhes do filme,
@@ -21,7 +21,7 @@ class FilmAdapter {
             return FilmData(
                 id = filmJson.id,
                 title = filmJson.title,
-                releaseData = filmJson.releaseData,
+                releaseDate = filmJson.releaseDate,
                 genres = genresString,
                 homepage = filmJson.homepage,
                 originalLanguage = filmJson.originalLanguage,
@@ -50,7 +50,7 @@ class FilmAdapter {
             return FilmsJson.FilmJson(
                 id = filmData.id,
                 title = filmData.title,
-                releaseData = filmData.releaseData,
+                releaseDate = filmData.releaseDate,
                 genres = genres,
                 homepage = filmData.homepage,
                 originalLanguage = filmData.originalLanguage,
@@ -80,14 +80,14 @@ class FilmAdapter {
             return genresText
         }
 
-        private fun convertStringToGenreArray (genres: String): Genres {
+        private fun convertStringToGenreArray (genres: String): Array<Genres.Genre> {
             val newGenres = genres.substring(0,genres.length-1)//remover o '.'
             val arrString = newGenres.split(',')
             val arrGenres = arrayOf(Genres.Genre())
             for (i in arrString.indices)
                 arrGenres[i].name = arrString[i]
 
-            return Genres( arrGenres )
+            return arrGenres
         }
 
         private fun convertCompanyArrayToString (companies: Array<ProductionCompanies.ProductionCompany>?) : String {
@@ -100,14 +100,14 @@ class FilmAdapter {
             return companiesText
         }
 
-        private fun convertStringToCompanyArray (companies: String): ProductionCompanies {
+        private fun convertStringToCompanyArray (companies: String): Array<ProductionCompanies.ProductionCompany> {
             val newCompanies = companies.substring(0,companies.length-1)//remover o '.'
             val arrString = newCompanies.split(',')
             val arrCompanies = arrayOf(ProductionCompanies.ProductionCompany())
             for (i in arrString.indices)
                 arrCompanies[i].name = arrString[i]
 
-            return ProductionCompanies( arrCompanies )
+            return arrCompanies
         }
 
     }

@@ -21,7 +21,7 @@ data class FilmData (
     var title: String = "Título do Filme",
 
     @ColumnInfo(name = "release_date")
-    var releaseData: String = "????-??-??",
+    var releaseDate: String = "aaaa-mm-dd",
 
     @ColumnInfo(name = "genres")
     var genres: String = "",
@@ -36,7 +36,7 @@ data class FilmData (
     var overview: String = "",
 
     @ColumnInfo(name = "popularity")
-    var popularity: String = "",
+    var popularity: String = "0",
 
     @ColumnInfo(name = "poster_path")
     var posterPath: String = "",
@@ -45,10 +45,10 @@ data class FilmData (
     var status: String = "",
 
     @ColumnInfo(name = "revenue")
-    var revenue: Int = -1,
+    var revenue: Long = -1,
 
     @ColumnInfo(name = "budget")
-    var budget: Int = -1,
+    var budget: Long = -1,
 
     @ColumnInfo(name = "runtime")
     var runtime: Int = -1,

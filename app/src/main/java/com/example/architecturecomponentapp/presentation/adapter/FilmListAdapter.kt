@@ -21,7 +21,7 @@ class FilmListAdapter (
     : RecyclerView.Adapter<FilmListAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder{
-        //converter se a lista de filmes vier no tipo FilmJson
+        //converter para FilmJson se a lista de filmes vier no tipo FilmData
         filmListData?.let {
             for (i in it.indices)
                 filmListJson[i] = FilmAdapter.adaptDataToJson(it[i])
@@ -53,7 +53,7 @@ class FilmListAdapter (
             holder.filmTitle.text = film.title
 
         // alterar o formato da data para dd/mm/aaaa
-        val date = film.releaseData
+        val date = film.releaseDate
         holder.filmReleaseDate.text =
             ("${date.subSequence(8,10)}/${date.subSequence(5,7)}/${date.subSequence(0,4)}")
 

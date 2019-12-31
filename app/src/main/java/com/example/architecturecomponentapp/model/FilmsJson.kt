@@ -1,12 +1,11 @@
 package com.example.architecturecomponentapp.model
 
-import androidx.annotation.NonNull
 import com.squareup.moshi.Json
 import java.io.Serializable
 
 class FilmsJson (
     @Json(name = "results")
-    var movies: List<FilmJson>? = null
+    var movies: Array<FilmJson>? = null
 )
 {
     class FilmJson (
@@ -17,10 +16,10 @@ class FilmsJson (
         var title: String = "Título do Filme",
 
         @Json(name = "release_date")
-        var releaseData: String = "????-??-??",
+        var releaseDate: String = "aaaa-mm-dd",
 
         @Json(name = "genres")
-        var genres: Genres?,
+        var genres: Array<Genres.Genre>?,
 
         @Json(name = "homepage")
         var homepage: String = "www.google.com",
@@ -32,7 +31,7 @@ class FilmsJson (
         var overview: String = "",
 
         @Json(name = "popularity")
-        var popularity: String = "",
+        var popularity: String = "0",
 
         @Json(name = "poster_path")
         var posterPath: String = "",
@@ -41,10 +40,10 @@ class FilmsJson (
         var status: String = "",
 
         @Json(name = "revenue")
-        var revenue: Int = -1,
+        var revenue: Long = -1,
 
         @Json(name = "budget")
-        var budget: Int = -1,
+        var budget: Long = -1,
 
         @Json(name = "runtime")
         var runtime: Int = -1,
@@ -53,6 +52,6 @@ class FilmsJson (
         var voteAverage: Float = .0f,
 
         @Json(name = "production_company")
-        var productionCompanies: ProductionCompanies?
+        var productionCompanies: Array<ProductionCompanies.ProductionCompany>?
     ) : Film, Serializable
 }

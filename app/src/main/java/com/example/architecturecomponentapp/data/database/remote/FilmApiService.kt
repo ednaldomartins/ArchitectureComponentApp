@@ -29,7 +29,7 @@ interface FilmApiService {
 
     // chamar 1 unico filme usando o ID
     @GET("movie/{film}${Api.UNIQUE_KEY}")
-    fun callFilmApi(@Path("film") film: String): Deferred<FilmData>
+    fun callFilmApi(@Path("film") film: String): Deferred<FilmsJson.FilmJson>
 
     // chamar lista de filmes mais populares da API
     @GET("movie/popular${Api.UNIQUE_KEY}${Api.LANGUAGE}")
