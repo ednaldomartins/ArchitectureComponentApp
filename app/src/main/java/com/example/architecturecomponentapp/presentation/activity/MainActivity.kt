@@ -1,8 +1,7 @@
-package com.example.architecturecomponentapp.presentation
+package com.example.architecturecomponentapp.presentation.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.viewpager.widget.ViewPager
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout
@@ -12,6 +11,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.presentation.fragment.AddFilmFragment
 import com.example.architecturecomponentapp.presentation.fragment.ApiFilmListFragment
+import com.example.architecturecomponentapp.presentation.fragment.FilmCategoryFragment
 import com.example.architecturecomponentapp.presentation.fragment.FilmListFragment
 
 
@@ -21,12 +21,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.e("TESTE", "activity no onCreate")
-
         val fragmentAdapter = FragmentPagerItemAdapter(
             supportFragmentManager, FragmentPagerItems.with(this)
-                .add("Lista do Room", FilmListFragment::class.java)
-                .add("Lista da API", ApiFilmListFragment::class.java)
+                .add("Destaques", ApiFilmListFragment::class.java)
+                .add("Categorias", FilmCategoryFragment::class.java)
+                .add("Favoritos", FilmListFragment::class.java)
                 .add("Adicionar Filme", AddFilmFragment::class.java)
                 .create()
         )
