@@ -51,7 +51,7 @@ class FilmsJson (
         @Json(name = "vote_average")
         var voteAverage: Float = .0f,
 
-        @Json(name = "production_company")
+        @Json(name = "production_companies")
         var productionCompanies: Array<ProductionCompanies.ProductionCompany>?
     ) : Film, Serializable
 }
