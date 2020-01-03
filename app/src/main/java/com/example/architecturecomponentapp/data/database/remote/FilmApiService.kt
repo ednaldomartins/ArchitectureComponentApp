@@ -1,6 +1,5 @@
 package com.example.architecturecomponentapp.data.database.remote
 
-import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.FilmsJson
 import com.example.architecturecomponentapp.model.Genres
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -28,8 +27,8 @@ interface FilmApiService {
     fun callGenreMovieApi(): Deferred<Genres>
 
     // chamar 1 unico filme usando o ID
-    @GET("movie/{film}${Api.UNIQUE_KEY}")
-    fun callFilmApi(@Path("film") film: String): Deferred<FilmsJson.FilmJson>
+    @GET("movie/{filmId}${Api.UNIQUE_KEY}${Api.LANGUAGE}")
+    fun callFilmApi(@Path("filmId") filmId: Long): Deferred<FilmsJson.FilmJson>
 
     // chamar lista de filmes mais populares da API
     @GET("movie/popular${Api.UNIQUE_KEY}${Api.LANGUAGE}")
