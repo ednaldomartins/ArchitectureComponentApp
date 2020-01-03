@@ -73,10 +73,13 @@ class FilmAdapter {
         private fun convertGenreArrayToString (genres: Array<Genres.Genre>?): String {
             val genresSize = genres?.size  ?: 0
             var genresText = ""
-            for (i in 0 until genresSize)
-                genresText += genres!![i].name + ","
 
-            genresText = genresText.substring(0, genresSize-2) + "."
+            for (i in 0 until genresSize)
+                genresText += genres!![i].name + ", "
+            // se o vetor nao contem nenhum genero, entao nao deve entre nesse if
+            if (genresSize > 0)
+                genresText = genresText.substring(0, genresText.length-2) + "."
+
             return genresText
         }
 
@@ -93,10 +96,13 @@ class FilmAdapter {
         private fun convertCompanyArrayToString (companies: Array<ProductionCompanies.ProductionCompany>?) : String {
             val companiesSize = companies?.size  ?: 0
             var companiesText = ""
+
             for (i in 0 until companiesSize)
                 companiesText += companies!![i].name + ", "
+            // se o vetor nao contem nenhum genero, entao nao deve entre nesse if
+            if (companiesSize > 0)
+                companiesText = companiesText.substring(0, companiesText.length-2) + "."
 
-            companiesText = companiesText.substring(0, companiesSize-2) + "."
             return companiesText
         }
 
