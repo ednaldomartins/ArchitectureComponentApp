@@ -1,6 +1,8 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +16,15 @@ import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class ApiFilmListFragment: Fragment() {
+class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener{
 
-    private lateinit var mFilmListApi: RecyclerView
+    private lateinit var mFilmRecylerViewApi: RecyclerView
     private lateinit var filmListAdapter: FilmListAdapter
+
+    private lateinit var filmViewModel: FilmViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
@@ -30,12 +35,12 @@ class ApiFilmListFragment: Fragment() {
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        val filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
+        filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
-        mFilmListApi.layoutManager = layoutManager
-        mFilmListApi.setHasFixedSize(true)
+        mFilmRecylerViewApi.layoutManager = layoutManager
+        mFilmRecylerViewApi.setHasFixedSize(true)
 
         // chamada da lista de films da api
         filmViewModel.requestFilmListApiService()
@@ -43,8 +48,8 @@ class ApiFilmListFragment: Fragment() {
         filmViewModel.responseFilmList.observe(this, Observer {
             // configurando adapter do RecyclerView
             it.movies?.let { list ->
-                filmListAdapter = FilmListAdapter(activity, list)
-                mFilmListApi.adapter = filmListAdapter
+                filmListAdapter = FilmListAdapter(context = activity, filmListJson = list, onFilmClickListener = this)
+                mFilmRecylerViewApi.adapter = filmListAdapter
             }
         })
 
@@ -52,6 +57,15 @@ class ApiFilmListFragment: Fragment() {
     }
 
     private fun initViews(v: View) {
-        mFilmListApi = v.findViewById(R.id.film_list_api_recycle_view)
+        mFilmRecylerViewApi = v.findViewById(R.id.film_list_api_recycle_view)
     }
+
+    override fun onFilmClick(filmId: Long?, position: Int) {
+        Log.e("ONCLICKFILM", "ID = $filmId, position = $position")
+        val intent: Intent = Intent(activity, FilmDetailsActivity::class.java)
+        //val id2 = filmViewModel.responseFilmList.value?DeActivity.movies?.get(position)?.id // caminho mais longo para pegar o ID
+        intent.putExtra("filmId", filmId)
+        startActivity( intent )
+    }
+
 }
