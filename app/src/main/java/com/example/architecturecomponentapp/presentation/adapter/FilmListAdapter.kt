@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.remote.Api
 import com.example.architecturecomponentapp.data.entity.FilmData
@@ -17,9 +18,10 @@ import com.example.architecturecomponentapp.model.FilmsJson
 class FilmListAdapter (
     private var context: Context?,
     private var filmListJson: Array<FilmsJson.FilmJson>,
-    private var filmListData: List<FilmData>? = null)
+    private var filmListData: List<FilmData>? = null,
+    private var onFilmClickListener: OnFilmClickListener? = null
+    )
     : RecyclerView.Adapter<FilmListAdapter.MyViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder{
         //converter para FilmJson se a lista de filmes vier no tipo FilmData
         filmListData?.let {
@@ -30,7 +32,7 @@ class FilmListAdapter (
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.adapter_film_list, parent, false)
 
-        return MyViewHolder(view)
+        return MyViewHolder(view, onFilmClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -39,6 +41,8 @@ class FilmListAdapter (
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val film: FilmsJson.FilmJson = filmListJson[position]
+        // guardar o ID para se caso o item seja clicado, sera feito uma requisicao a patir do ID.
+        holder.filmId = film.id
 
         // se tivermos um caminho de uma foto salva, entao...
         if (film.posterPath != "") {
@@ -63,11 +67,24 @@ class FilmListAdapter (
         holder.filmVoteAverage.text = film.voteAverage.toString()
     }
 
-    class MyViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class MyViewHolder(v: View, var onFilmClickListener: OnFilmClickListener? = null) : RecyclerView.ViewHolder(v), View.OnClickListener {
+        var filmId: Long? = null
         var filmPoster: ImageView = v.findViewById(R.id.adapter_film_list_image_film)
         var filmTitle: TextView = v.findViewById(R.id.adapter_film_list_text_title)
         var filmReleaseDate: TextView = v.findViewById(R.id.adapter_film_list_text_release_date)
         var filmPopularity: TextView = v.findViewById(R.id.adapter_film_list_text_popularity)
         var filmVoteAverage: TextView = v.findViewById(R.id.adapter_film_list_text_vote_average)
+
+        init {
+            v.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            onFilmClickListener?.onFilmClick(filmId, adapterPosition)
+        }
+    }
+
+    interface OnFilmClickListener {
+        fun onFilmClick(filmId: Long?, position: Int)
     }
 }
