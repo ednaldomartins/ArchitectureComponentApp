@@ -84,13 +84,17 @@ class FilmAdapter {
         }
 
         private fun convertStringToGenreArray (genres: String): Array<Genres.Genre> {
-            val newGenres = genres.substring(0,genres.length-1)//remover o '.'
-            val arrString = newGenres.split(',')
-            val arrGenres = arrayOf(Genres.Genre())
-            for (i in arrString.indices)
-                arrGenres[i].name = arrString[i]
+            return if (genres != "") {
+                val newGenres = genres.substring(0, genres.length - 1)//remover o '.'
+                val arrString = newGenres.split(',')
+                val arrGenres = Array(size = arrString.size, init = { Genres.Genre() })
+                for (i in arrString.indices)
+                    arrGenres[i].name = arrString[i]
 
-            return arrGenres
+                arrGenres
+            } else {
+                Array(size = 0, init = { Genres.Genre() })
+            }
         }
 
         private fun convertCompanyArrayToString (companies: Array<ProductionCompanies.ProductionCompany>?) : String {
@@ -107,13 +111,17 @@ class FilmAdapter {
         }
 
         private fun convertStringToCompanyArray (companies: String): Array<ProductionCompanies.ProductionCompany> {
-            val newCompanies = companies.substring(0,companies.length-1)//remover o '.'
-            val arrString = newCompanies.split(',')
-            val arrCompanies = arrayOf(ProductionCompanies.ProductionCompany())
-            for (i in arrString.indices)
-                arrCompanies[i].name = arrString[i]
+            return if (companies != "") {
+                val newCompanies = companies.substring(0,companies.length-1)//remover o '.'
+                val arrString = newCompanies.split(',')
+                val arrCompanies = Array(size = arrString.size, init = { ProductionCompanies.ProductionCompany()})
+                for (i in arrString.indices)
+                    arrCompanies[i].name = arrString[i]
 
-            return arrCompanies
+                arrCompanies
+            } else {
+                Array(size = 0, init = { ProductionCompanies.ProductionCompany()})
+            }
         }
 
     }
