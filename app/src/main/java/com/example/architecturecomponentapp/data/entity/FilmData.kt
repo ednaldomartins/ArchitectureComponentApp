@@ -12,7 +12,7 @@ import com.example.architecturecomponentapp.model.Film
 @Entity (tableName = "film_table")
 data class FilmData (
     @NonNull @PrimaryKey(autoGenerate = true)
-    var idDB: Long = -1L,
+    var idDB: Long = 0,
 
     @ColumnInfo(name = "id")
     var id: Long = -1L,
