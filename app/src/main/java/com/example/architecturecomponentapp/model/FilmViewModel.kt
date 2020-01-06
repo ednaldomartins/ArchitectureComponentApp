@@ -24,16 +24,17 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     // lista de filmes da API
     private var rFilmList = MutableLiveData<FilmsJson>()
     val responseFilmList: LiveData<FilmsJson> get() = rFilmList
-
+    // lista de generos existentes na API
     private var listGenre: Array<Genres.Genre>? = null
 
-    init {
+    fun requestGenreListApi () {
         uiCoroutineScope.launch {
-            //val request= FilmsApi.retrofitService.callGenreMovieApi()
-            //listGenre = request.await().genreList
+            val request= FilmsApi.retrofitService.callGenreMovieApi()
+            listGenre = request.await().genreList
         }
     }
 
+    // recupera apenas um unico filme da API, para exibir suas informacoes na activity de detalhes
     fun requestFilmApiService (filmId: Long) {
         uiCoroutineScope.launch {
             //receber a chamada da API sem bloquear a thread princial
@@ -50,6 +51,7 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
         }
     }
 
+    // recupera uma lista de filmes da API
     fun requestFilmListApiService () {
         uiCoroutineScope.launch {
             //receber a chamada da API sem bloquear a thread princial
@@ -104,9 +106,50 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
         }
     }
 
+    // inserir film chamando função de suspensao
+    fun insertFilm(filmData: FilmData) {
+        uiCoroutineScope.launch {
+            insert(filmData)
+        }
+    }
+
     //funcao de suspensao para inserir filmData no BD
     private suspend fun insert (filmData: FilmData) {
         withContext(Dispatchers.IO) { databaseDao.insertFilm(filmData) }
+    }
+
+    fun isFavoriteFilm (id: Long) : Boolean {
+        var result: Boolean = false
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                result = databaseDao.getFavorite(id)
+            }
+        }
+        return result
+    }
+
+    // deletar film chamando função de suspensao
+    fun deleteFilm(filmData: FilmData) {
+        uiCoroutineScope.launch {
+            delete(filmData)
+        }
+    }
+
+    private suspend fun delete(film: FilmData) {
+        withContext(Dispatchers.IO) { databaseDao.deleteFilm(film) }
+    }
+
+    fun getFilm (id: Long): FilmData {
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                databaseDao.get(id)
+            }
+        }
+    }
+
+    // metodo para limpar o DB
+    fun clearDatabase () {
+        uiCoroutineScope.launch { withContext(Dispatchers.IO) { databaseDao.clear() } }
     }
 
     override fun onCleared() {

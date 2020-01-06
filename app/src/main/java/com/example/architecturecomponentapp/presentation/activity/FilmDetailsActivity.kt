@@ -24,6 +24,7 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var filmViewModel: FilmViewModel
     private lateinit var film: FilmData
+    private var isFavorite: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,13 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
         filmViewModel.responseFilmJson.observe(this, Observer { json ->
             // aplicar os dados recebido na activity de detalhes
             film = FilmAdapter.adaptJsonToData( json )
+
+            // verificar se esta nos favoritos do database do usuario
+            isFavorite = filmViewModel.isFavoriteFilm(id)
+            film_details_favorite.background =
+                if(isFavorite) getDrawable(R.drawable.ic_star_favorite_32dp)
+                else getDrawable(R.drawable.ic_star_not_favorite_32dp)
+
             if (film.posterPath != "") {
                 val imgUri = Uri.parse( Api.URL_IMAGE + film.posterPath )
                 Glide.with(this.film_details_poster_path.context).load(imgUri).into(this.film_details_poster_path)
@@ -60,7 +68,6 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
             film_detail_revenue.text = ("Receita: " + film.revenue + "US$")
             film_detail_homepage.text = film.homepage
         })
-
     }
 
     fun initViews() {
@@ -79,12 +86,18 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         v?.let {
             if (v.id == favoriteButton.id) {
-                // se nao for o icone de favorito, entao colocar como favorito e guardar no Database
-                if (favoriteButton.background.state == getDrawable( R.drawable.ic_star_not_favorite_32dp)?.state ) {//usar variavel booleana para fazer essa checagem com seguranca
+                // se nao for favorito, entao colocar como favorito e guardar no Database
+                if ( !isFavorite ) {
                     filmViewModel.insertFilm(film)
-                    favoriteButton.background = getDrawable( R.drawable.ic_star_favorite_32dp)
+                    favoriteButton.background = getDrawable( R.drawable.ic_star_favorite_32dp )
                 }
                 // senao remover do DB
+                else {
+                    // primeiro recuperar o filme do DB Room, para remove-lo por Objeto FilmData como parametro
+                    val favoritFilm = filmViewModel.getFilm(film.id)
+                    filmViewModel.deleteFilm(favoritFilm)
+                    favoriteButton.background = getDrawable( R.drawable.ic_star_not_favorite_32dp )
+                }
             }
         }
     }
