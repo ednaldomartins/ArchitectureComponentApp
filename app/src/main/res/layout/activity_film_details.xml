@@ -35,12 +35,12 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:text="Nome do Filme"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/title_size"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/film_details_favorite"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/film_details_poster_path" />
 
@@ -155,19 +155,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/film_detail_release_date" />
 
-        <TextView
-                android:id="@+id/film_detail_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="#C89600"
-                android:textColor="@color/colorSecondaryText"
-                android:textSize="@dimen/text_primary_details_size"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/film_details_poster_path"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_average" />
-
         <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
@@ -256,6 +243,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
                 app:layout_constraintTop_toBottomOf="@+id/film_detail_revenue" />
+
+        <Button
+                android:id="@+id/film_details_favorite"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_star_not_favorite_32dp"
+                android:clickable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/film_details_poster_path" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
