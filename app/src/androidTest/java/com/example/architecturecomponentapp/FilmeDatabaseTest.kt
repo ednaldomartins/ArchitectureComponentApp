@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.example.architecturecomponentapp.data.dao.FilmDao
-import com.example.architecturecomponentapp.data.entity.Film
+import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import org.junit.After
 
@@ -35,7 +35,7 @@ class FilmeDatabaseTest {
     @Test
     @Throws(IOException::class)
     fun insertFilm() {
-        val film = Film()
+        val film = FilmData()
         filmDao.insertFilm(film)
     }
 

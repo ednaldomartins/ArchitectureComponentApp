@@ -25,7 +25,6 @@ class AddFilmFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         Log.e("TESTE", "fragment no onCreate")
         //arguments?.let { }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,11 +59,23 @@ class AddFilmFragment : Fragment(), View.OnClickListener {
         if (v?.id == R.id.add_film_button_add) {
             Log.e("TESTE", "fragment no onClick > IF")
             filmViewModel?.insertFilm(
-                add_film_edit_text_name.text.toString(),
-                add_film_edit_text_year.text.toString()
+                -1,
+                title = add_film_edit_text_name.text.toString(),
+                releaseDate = add_film_edit_text_year.text.toString(),
+                genresString = "",
+                homepage = "",
+                originalLanguage = "",
+                overview = "",
+                popularity = "",
+                posterPath = "",
+                status = "",
+                revenue = -1,
+                budget = -1,
+                runtime = -1,
+                voteAverage = 0f,
+                companiesString = ""
             )
         }
-
     }
 
 }
