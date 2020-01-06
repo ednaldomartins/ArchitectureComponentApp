@@ -1,5 +1,6 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,16 +14,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.*
+import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class FilmListFragment: Fragment() {
+class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
 
     private lateinit var mFilmList: RecyclerView
     private lateinit var filmListAdapter: FilmListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
-        val view = inflater.inflate(R.layout.fragment_film_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_api_film_list, container, false)
         initViews(view)
 
         // recuperar fonte de dados
@@ -39,9 +41,10 @@ class FilmListFragment: Fragment() {
         filmViewModel.databaseDao.filmList().observe(this, Observer {
             // configurando adapter do RecyclerView
             filmListAdapter = FilmListAdapter(
-                activity,
-                arrayOf( FilmsJson.FilmJson(genres = Genres(emptyArray()), productionCompanies = ProductionCompanies(emptyArray())) ),
-                it)
+                context = activity,
+                filmListJson = Array( it.size, { FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf()) } ),
+                filmListData = it,
+                onFilmClickListener = this)
             mFilmList.adapter = filmListAdapter
         })
 
@@ -49,6 +52,12 @@ class FilmListFragment: Fragment() {
     }
 
     private fun initViews(v: View) {
-        mFilmList = v.findViewById(R.id.film_list_recycle_view)
+        mFilmList = v.findViewById(R.id.film_list_api_recycle_view)
+    }
+
+    override fun onFilmClick(filmId: Long?, position: Int) {
+        val intent = Intent(activity, FilmDetailsActivity::class.java)
+        intent.putExtra("filmId", filmId)
+        startActivity( intent )
     }
 }
