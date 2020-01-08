@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 private val  moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -33,6 +34,10 @@ interface FilmApiService {
     // chamar lista de filmes mais populares da API
     @GET("movie/popular${Api.UNIQUE_KEY}${Api.LANGUAGE}")
     fun callPopularMovieListApi(): Deferred<FilmsJson>
+
+    // buscar lista de filmes na API pelo token search
+    @GET("search/movie${Api.UNIQUE_KEY}${Api.LANGUAGE}")
+    fun callSearchMovieList(@Query("query")search: String): Deferred<FilmsJson>
 
     // chamar lista de filmes por categoria
     @GET("list/{genre}${Api.UNIQUE_KEY}${Api.LANGUAGE}")
