@@ -31,7 +31,7 @@ class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        val filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
+        val filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)

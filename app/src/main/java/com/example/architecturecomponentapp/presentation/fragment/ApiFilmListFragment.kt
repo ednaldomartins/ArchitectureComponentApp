@@ -35,7 +35,8 @@ class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener{
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        filmViewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmViewModel::class.java)
+        //estou usando a referencia da activity pra pegar a busca
+        filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
@@ -63,7 +64,6 @@ class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener{
     override fun onFilmClick(filmId: Long?, position: Int) {
         Log.e("ONCLICKFILM", "ID = $filmId, position = $position")
         val intent: Intent = Intent(activity, FilmDetailsActivity::class.java)
-        //val id2 = filmViewModel.responseFilmList.value?DeActivity.movies?.get(position)?.id // caminho mais longo para pegar o ID
         intent.putExtra("filmId", filmId)
         startActivity( intent )
     }
