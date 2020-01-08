@@ -4,8 +4,15 @@ import com.squareup.moshi.Json
 import java.io.Serializable
 
 class FilmsJson (
+    // Json da lista de filmes retornada da API
     @Json(name = "results")
-    var movies: Array<FilmJson>? = null
+    var movies: Array<FilmJson>? = null,
+    // numero da pagina atual da lista de filmes
+    @Json(name = "page")
+    var page: Long = 0,
+    // total de paginas encontrados da lista de filmes
+    @Json(name = "total_pages")
+    var totalPages: Long = 0
 )
 {
     class FilmJson (
