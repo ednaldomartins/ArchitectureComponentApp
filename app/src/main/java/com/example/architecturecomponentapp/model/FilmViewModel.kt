@@ -37,7 +37,7 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
 
     // recupera apenas um unico filme da API, para exibir suas informacoes na activity de detalhes
     fun requestFilmApiService (filmId: Long) {
-        uiCoroutineScope.launch {
+        runBlocking {
             //receber a chamada da API sem bloquear a thread princial
             val getCallDeferred = FilmsApi.retrofitService.callFilmApi(filmId)
             try {
