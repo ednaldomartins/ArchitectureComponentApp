@@ -13,14 +13,18 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
+import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
+import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
 
     private lateinit var mFilmList: RecyclerView
     private lateinit var filmListAdapter: FilmListAdapter
+
+    private lateinit var filmViewModel: FilmViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
@@ -31,7 +35,7 @@ class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
         val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        val filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
+        filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
@@ -56,8 +60,20 @@ class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
     }
 
     override fun onFilmClick(filmId: Long?, position: Int) {
-        val intent = Intent(activity, FilmDetailsActivity::class.java)
-        intent.putExtra("filmId", filmId)
-        startActivity( intent )
+        val intent: Intent = Intent(activity, FilmDetailsActivity::class.java)
+        val film = filmViewModel.getFilm(filmId!!)
+        intent.putExtra("film", film)
+        intent.putExtra("favorite", true)
+        // inicia activity com resquestCode = 1 -> abrir a partir do DB
+        startActivityForResult( intent, 1 )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // resultCode = 2 -> o filme foi removido dos favoritos
+        if (requestCode == 1 && resultCode == 2) {
+            val film = data!!.extras?.getSerializable("film") as FilmData
+            filmViewModel.deleteFilm(film)
+        }
     }
 }
