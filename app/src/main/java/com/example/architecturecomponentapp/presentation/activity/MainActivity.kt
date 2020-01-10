@@ -18,9 +18,7 @@ import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
-import com.example.architecturecomponentapp.presentation.fragment.AddFilmFragment
 import com.example.architecturecomponentapp.presentation.fragment.ApiFilmListFragment
-import com.example.architecturecomponentapp.presentation.fragment.FilmCategoryFragment
 import com.example.architecturecomponentapp.presentation.fragment.FilmListFragment
 
 class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
@@ -68,7 +66,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         Toast.makeText(this, "buscando por $query", Toast.LENGTH_LONG ).show()
-        filmViewModel.searchFilmListApiService(query!!)
+        val fragments = supportFragmentManager.fragments
+        // verificar qual fragment esta visivel ao usuario
+        if ( fragments[0].userVisibleHint ) {
+            filmViewModel.searchFilmListApiService(query!!)
+        }
+        else if ( fragments[1].userVisibleHint ) {
+            filmViewModel.searchFilmDatabase(query!!)
+        }
         return true
     }
 
