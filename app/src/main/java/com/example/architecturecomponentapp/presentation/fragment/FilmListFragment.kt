@@ -16,7 +16,6 @@ import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
-import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
@@ -42,11 +41,15 @@ class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
         mFilmList.layoutManager = layoutManager
         mFilmList.setHasFixedSize(true)
 
-        filmViewModel.databaseDao.filmList().observe(this, Observer {
+        filmViewModel.filmsDataBase?.observe(this, Observer {
+            filmViewModel.setPresentationDatabase(it)
+        })
+
+        filmViewModel.presentationFilmList?.observe(this, Observer {
             // configurando adapter do RecyclerView
             filmListAdapter = FilmListAdapter(
                 context = activity,
-                filmListJson = Array( it.size, { FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf()) } ),
+                filmListJson = Array( it.size) { FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf()) },
                 filmListData = it,
                 onFilmClickListener = this)
             mFilmList.adapter = filmListAdapter
