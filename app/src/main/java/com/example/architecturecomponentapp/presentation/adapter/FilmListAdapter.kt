@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.database.remote.Api
+import com.example.architecturecomponentapp.util.Api
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.FilmsJson
 

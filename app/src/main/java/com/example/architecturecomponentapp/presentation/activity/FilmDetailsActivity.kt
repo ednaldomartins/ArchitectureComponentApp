@@ -9,14 +9,13 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_film_details.*
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.database.remote.Api
+import com.example.architecturecomponentapp.util.Api
 import com.example.architecturecomponentapp.data.entity.FilmData
 
 class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var favoriteButton: Button
 
-    //private lateinit var filmViewModel: FilmViewModel
     private lateinit var film: FilmData
     private var isFavorite: Boolean = false
 

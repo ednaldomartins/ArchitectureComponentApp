@@ -11,4 +11,4 @@
 /build
 /captures
 .externalNativeBuild
-app/src/main/java/com/example/architecturecomponentapp/data/database/remote/Api.kt
+app/src/main/java/com/example/architecturecomponentapp/util/Api.kt
