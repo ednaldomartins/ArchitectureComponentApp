@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
@@ -18,10 +19,13 @@ import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
+class FilmListFragment: Fragment(),
+    FilmListAdapter.OnFilmClickListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var mFilmList: RecyclerView
     private lateinit var filmListAdapter: FilmListAdapter
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     private lateinit var filmViewModel: FilmViewModel
 
@@ -60,6 +64,14 @@ class FilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener {
 
     private fun initViews(v: View) {
         mFilmList = v.findViewById(R.id.film_list_api_recycle_view)
+        swipeRefresh = v.findViewById(R.id.film_list_api_layout)
+        swipeRefresh.setOnRefreshListener(this)
+    }
+
+
+    override fun onRefresh() {
+        filmViewModel.loadFilmDatabase()
+        swipeRefresh.isRefreshing = false
     }
 
     override fun onFilmClick(filmId: Long?, position: Int) {
