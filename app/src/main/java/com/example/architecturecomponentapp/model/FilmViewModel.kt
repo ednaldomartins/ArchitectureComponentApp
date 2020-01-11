@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.database.remote.FilmsApi
 import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.util.FilmApiStatus
 
 class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewModel (app) {
 
@@ -27,6 +28,11 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     val responseFilmList: LiveData<FilmsJson> get() = _requestFilmList
     // lista de generos existentes na API
     private var listGenre: Array<Genres.Genre>? = null
+    // connection status
+    private val _status = MutableLiveData<FilmApiStatus>()
+    // get() connection  status
+    val status: LiveData<FilmApiStatus> get() = _status
+
     /**
      *  @param _filmsDatabase tem acesso a lista de filmes do database local.
      *  @param filmsDatabase deve ser usado para qualquer acesso a esse database local de filmes,
@@ -56,7 +62,13 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     init {
         uiCoroutineScope.launch {
             val request= FilmsApi.retrofitService.callGenreMovieApi()
-            listGenre = request.await().genreList
+            try {
+                listGenre = request.await().genreList
+            }
+            catch (t: Throwable) {
+                Log.e("ERRO - FILM REQUEST", t.message!!)
+                listGenre = emptyArray()
+            }
         }
     }
 
@@ -71,8 +83,8 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
                 _requestFilm.value = requestResult
             }
             catch (t: Throwable) {
-                val string = t.message
-                Log.e("ERRO - FILM REQUEST", string!!)
+                Log.e("ERRO - FILM REQUEST", t.message!!)
+                _requestFilm.value = FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf())
             }
         }
     }
@@ -83,12 +95,15 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
             //receber a chamada da API sem bloquear a thread princial
             val getCallDeferred = FilmsApi.retrofitService.callPopularMovieListApi()
             try {
-                val listResult = getCallDeferred.await()
-                _requestFilmList.value = listResult
+                _status.value = FilmApiStatus.LOADING
+                val resultList = getCallDeferred.await()
+                _requestFilmList.value = resultList
+                _status.value = FilmApiStatus.DONE
             }
             catch (t: Throwable) {
-                val string = t.message
-                Log.e("ERRO - REQUEST", string!!)
+                Log.e("ERRO - REQUEST", t.message!!)
+                _status.value = FilmApiStatus.ERRO
+                _requestFilmList.value = FilmsJson( emptyArray( ) )
             }
         }
     }
@@ -99,8 +114,11 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
             //receber a chamada da API sem bloquear a thread princial
             val getCallDeferred = FilmsApi.retrofitService.callSearchMovieList(search)
             try {
+                _status.value = FilmApiStatus.LOADING
+                // pegar lista de filmes da API pela busca
                 val listResult = getCallDeferred.await()
                 _requestFilmList.value = listResult
+                _status.value = FilmApiStatus.DONE
 
                 if (listResult.movies?.size == 0)
                     Toast.makeText(getApplication(), "A busca não retornou nenhum filme.",Toast.LENGTH_LONG).show()
@@ -109,11 +127,15 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
 
             }
             catch (t: Throwable) {
-                val string = t.message
-                Log.e("ERRO - REQUEST", string!!)
+                Log.e("ERRO - search REQUEST", t.message!!)
                 Toast.makeText(getApplication(), "ERRO: não foi possível buscar por filme pesquisado.",Toast.LENGTH_LONG).show()
+                _status.value = FilmApiStatus.ERRO
             }
         }
+    }
+
+    fun loadFilmDatabase () {
+        presentationFilmList?.value = mementoPresentationFilmList?.value
     }
 
     // armazenar item presentes no database em lista multaveis para apresentacao de dados
@@ -195,7 +217,7 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     }
 
     fun isFavoriteFilm (id: Long) : Boolean {
-        var result: Boolean = false
+        var result = false
         runBlocking {
             withContext(Dispatchers.IO) {
                 result = databaseDao.getFavorite(id)

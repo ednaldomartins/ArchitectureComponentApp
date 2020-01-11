@@ -3,6 +3,7 @@ package com.example.architecturecomponentapp.presentation.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
@@ -19,13 +21,19 @@ import com.example.architecturecomponentapp.model.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
+import com.example.architecturecomponentapp.util.FilmApiStatus
 
-class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener, SearchView.OnQueryTextListener{
+class ApiFilmListFragment: Fragment(),
+    FilmListAdapter.OnFilmClickListener,
+    SearchView.OnQueryTextListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var mFilmRecylerViewApi: RecyclerView
-    private lateinit var filmListAdapter: FilmListAdapter
+    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var mStatusImageView: ImageView
 
     private lateinit var filmViewModel: FilmViewModel
+    private lateinit var filmListAdapter: FilmListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
@@ -46,6 +54,7 @@ class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener, Sear
 
         // chamada da lista de films da api
         filmViewModel.requestFilmListApiService()
+        connectionStatus()
 
         filmViewModel.responseFilmList.observe(this, Observer {
             // configurando adapter do RecyclerView
@@ -60,6 +69,30 @@ class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener, Sear
 
     private fun initViews(v: View) {
         mFilmRecylerViewApi = v.findViewById(R.id.film_list_api_recycle_view)
+        mStatusImageView = v.findViewById(R.id.film_list_api_status)
+        mSwipeRefreshLayout = v.findViewById(R.id.film_list_api_layout)
+        mSwipeRefreshLayout.setOnRefreshListener(this)
+    }
+
+    private fun connectionStatus () {
+        filmViewModel.status.observe(this, Observer {
+            if (it == FilmApiStatus.LOADING ) {
+                mStatusImageView.visibility = View.VISIBLE
+                mStatusImageView.setImageResource( R.drawable.ic_api_request_128dp )
+            }
+            else if (it == FilmApiStatus.ERRO) {
+                mStatusImageView.visibility = View.VISIBLE
+                mStatusImageView.setImageResource( R.drawable.ic_offline_128dp )
+            }
+            else if (it == FilmApiStatus.DONE) {
+                mStatusImageView.visibility  = View.GONE
+            }
+        })
+    }
+
+    override fun onRefresh() {
+        filmViewModel.requestFilmListApiService()
+        mSwipeRefreshLayout.isRefreshing = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -67,7 +100,6 @@ class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener, Sear
         val menuSearchItem: MenuItem? = menu?.findItem(R.id.search_menu)
         val searchView: SearchView = menuSearchItem?.actionView as SearchView
         searchView.setOnQueryTextListener(this)
-        //return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
@@ -98,10 +130,16 @@ class ApiFilmListFragment: Fragment(), FilmListAdapter.OnFilmClickListener, Sear
             var film: FilmData? = null
             filmViewModel.responseFilmJson.value?.let { film = FilmAdapter.adaptJsonToData(it) }
             film?.let {
-                intent.putExtra("film", film)
-                intent.putExtra("favorite", false)
-                // inicia activity com resquestCode = 2 -> abrir a partir da API
-                startActivityForResult( intent, 2 )
+                // verificacao simples para saber se eh um objeto vazio. melhorar isso depois.
+                if (it.id == -1L && it.releaseDate == "aaaa-mm-dd") {
+                    Toast.makeText(activity, "verifique sua conecção com a internet.", Toast.LENGTH_LONG).show()
+                }
+                else {
+                    intent.putExtra("film", film)
+                    intent.putExtra("favorite", false)
+                    // inicia activity com resquestCode = 2 -> abrir a partir da API
+                    startActivityForResult( intent, 2 )
+                }
             }
         }
     }
