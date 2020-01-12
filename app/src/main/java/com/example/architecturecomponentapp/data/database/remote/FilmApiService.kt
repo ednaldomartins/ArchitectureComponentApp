@@ -34,7 +34,7 @@ interface FilmApiService {
 
     // chamar lista de filmes mais populares da API
     @GET("movie/popular${Api.UNIQUE_KEY}${Api.LANGUAGE}")
-    fun callPopularMovieListApi(): Deferred<FilmsJson>
+    fun callPopularMovieListApi(@Query("page") page: Long): Deferred<FilmsJson>
 
     // buscar lista de filmes na API pelo token search
     @GET("search/movie${Api.UNIQUE_KEY}${Api.LANGUAGE}")
