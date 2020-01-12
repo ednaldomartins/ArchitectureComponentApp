@@ -3,7 +3,9 @@ package com.example.architecturecomponentapp.presentation.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -25,12 +27,18 @@ import com.example.architecturecomponentapp.util.FilmApiStatus
 
 class ApiFilmListFragment: Fragment(),
     FilmListAdapter.OnFilmClickListener,
+    View.OnClickListener,
     SearchView.OnQueryTextListener,
     SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var mFilmRecylerViewApi: RecyclerView
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mStatusImageView: ImageView
+    private lateinit var mButtonFirstPage: Button
+    private lateinit var mButtonBeforePage: Button
+    private lateinit var mButtonNextPage: Button
+    private lateinit var mButtonLastPage: Button
+    private lateinit var mNumberPage: TextView
 
     private lateinit var filmViewModel: FilmViewModel
     private lateinit var filmListAdapter: FilmListAdapter
@@ -57,6 +65,10 @@ class ApiFilmListFragment: Fragment(),
         connectionStatus()
 
         filmViewModel.responseFilmList.observe(this, Observer {
+            // setando o numero da pagina atual
+            // FALTA CONFIGURAR CLICK DOS BOTOES DE PAGINAS PARA NAO PERMITIR PASSAR OU VOLTAR QUANDO FOR O CASO
+            // CRIAR UM METODO E CONFIGURAR TUDO NESSE METODO SEPARADO
+            mNumberPage.text = it.page.toString()
             // configurando adapter do RecyclerView
             it.movies?.let { list ->
                 filmListAdapter = FilmListAdapter(context = activity, filmListJson = list, onFilmClickListener = this)
@@ -68,24 +80,42 @@ class ApiFilmListFragment: Fragment(),
     }
 
     private fun initViews(v: View) {
+        // inicializacao do menu
         mFilmRecylerViewApi = v.findViewById(R.id.film_list_api_recycle_view)
         mStatusImageView = v.findViewById(R.id.film_list_api_status)
         mSwipeRefreshLayout = v.findViewById(R.id.film_list_api_layout)
         mSwipeRefreshLayout.setOnRefreshListener(this)
+        // inicializacao dos botoes de navegacao de paginas
+        mButtonFirstPage = v.findViewById(R.id.film_list_api_button_first_page)
+        mButtonFirstPage.setOnClickListener(this)
+        mButtonBeforePage = v.findViewById(R.id.film_list_api_button_before_page)
+        mButtonBeforePage.setOnClickListener(this)
+        mButtonNextPage = v.findViewById(R.id.film_list_api_button_next_page)
+        mButtonNextPage.setOnClickListener(this)
+        mButtonLastPage = v.findViewById(R.id.film_list_api_button_last_page)
+        mButtonLastPage.setOnClickListener(this)
+        // localizando o textview do numero da pagina atual
+        mNumberPage = v.findViewById(R.id.film_list_api_number_page)
     }
 
     private fun connectionStatus () {
         filmViewModel.status.observe(this, Observer {
             if (it == FilmApiStatus.LOADING ) {
+                // ocultar recyclerview e mostrar imagem de carregamento
+                mFilmRecylerViewApi.visibility = View.GONE
                 mStatusImageView.visibility = View.VISIBLE
                 mStatusImageView.setImageResource( R.drawable.ic_api_request_128dp )
             }
             else if (it == FilmApiStatus.ERRO) {
+                // ocultar recyclerview e mostrar imagem de erro no carregamento
+                mFilmRecylerViewApi.visibility = View.GONE
                 mStatusImageView.visibility = View.VISIBLE
                 mStatusImageView.setImageResource( R.drawable.ic_offline_128dp )
             }
             else if (it == FilmApiStatus.DONE) {
+                // ocultar imagem de carregamento e mostrar recyclerview
                 mStatusImageView.visibility  = View.GONE
+                mFilmRecylerViewApi.visibility = View.VISIBLE
             }
         })
     }
@@ -110,6 +140,25 @@ class ApiFilmListFragment: Fragment(),
         Toast.makeText(activity, "buscando por $query", Toast.LENGTH_LONG ).show()
         filmViewModel.searchFilmListApiService(query!!)
         return true
+    }
+
+    override fun onClick(v: View?) {
+        v?.let{
+            when(it.id) {
+                R.id.film_list_api_button_first_page -> {
+                    filmViewModel.requestFilmListApiService()
+                }
+                R.id.film_list_api_button_before_page -> {
+                    filmViewModel.requestFilmListApiService( (mNumberPage.text.toString()).toLong() -1 )
+                }
+                R.id.film_list_api_button_next_page -> {
+                    filmViewModel.requestFilmListApiService( mNumberPage.text.toString().toLong() +1 )
+                }
+                R.id.film_list_api_button_last_page -> {
+                    filmViewModel.requestFilmListApiService( filmViewModel.totalPages )
+                }
+            }
+        }
     }
 
     override fun onFilmClick(filmId: Long?, position: Int) {
