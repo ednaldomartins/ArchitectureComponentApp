@@ -13,8 +13,9 @@ import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.database.remote.FilmsApi
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.util.FilmApiStatus
+import com.squareup.moshi.JsonDataException
 
-class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewModel (app) {
+class FilmViewModel (private val databaseDao: FilmDao, app: Application) : AndroidViewModel (app) {
 
     // Coroutines
     private var viewModelJob = Job()
@@ -32,6 +33,12 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     private val _status = MutableLiveData<FilmApiStatus>()
     // get() connection  status
     val status: LiveData<FilmApiStatus> get() = _status
+    // pagina atual
+    private var _actualPage: Long = 1
+    val actualPage: Long get() = _actualPage
+    // total de paginas
+    private var _totalPages: Long = 0
+    val totalPages: Long get() = _totalPages
 
     /**
      *  @param _filmsDatabase tem acesso a lista de filmes do database local.
@@ -90,18 +97,23 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
     }
 
     // recupera uma lista de filmes da API
-    fun requestFilmListApiService () {
+    fun requestFilmListApiService (page: Long = _actualPage) {
         uiCoroutineScope.launch {
             //receber a chamada da API sem bloquear a thread princial
-            val getCallDeferred = FilmsApi.retrofitService.callPopularMovieListApi()
+            val getCallDeferred = FilmsApi.retrofitService.callPopularMovieListApi(page)
             try {
                 _status.value = FilmApiStatus.LOADING
                 val resultList = getCallDeferred.await()
                 _requestFilmList.value = resultList
+                // informacoes sobre numero de paginas
+                _actualPage = resultList.page
+                _totalPages = resultList.totalPages
+                // normalizar status da requisicao
                 _status.value = FilmApiStatus.DONE
             }
             catch (t: Throwable) {
                 Log.e("ERRO - REQUEST", t.message!!)
+                Toast.makeText(getApplication(), "ERRO: não foi possível recuperar lista de filmes.",Toast.LENGTH_LONG).show()
                 _status.value = FilmApiStatus.ERRO
                 _requestFilmList.value = FilmsJson( emptyArray( ) )
             }
@@ -116,20 +128,31 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
             try {
                 _status.value = FilmApiStatus.LOADING
                 // pegar lista de filmes da API pela busca
-                val listResult = getCallDeferred.await()
-                _requestFilmList.value = listResult
+                val resultList = getCallDeferred.await()
+                _requestFilmList.value = resultList
+                // informacoes sobre numero de paginas
+                _actualPage = resultList.page
+                _totalPages = resultList.totalPages
+                // normalizar status da requisicao
                 _status.value = FilmApiStatus.DONE
 
-                if (listResult.movies?.size == 0)
+                if (resultList.movies?.size == 0)
                     Toast.makeText(getApplication(), "A busca não retornou nenhum filme.",Toast.LENGTH_LONG).show()
                 else
                     Toast.makeText(getApplication(), "A busca retornou com sucesso.",Toast.LENGTH_LONG).show()
 
             }
+            catch(t: JsonDataException) {
+                Log.e("ERRO - search REQUEST", t.message!!)
+                Toast.makeText(getApplication(), "ERRO: problema com os dados dos filmes recuperados.",Toast.LENGTH_LONG).show()
+                _status.value = FilmApiStatus.ERRO
+                _requestFilmList.value = FilmsJson( emptyArray( ) )
+            }
             catch (t: Throwable) {
                 Log.e("ERRO - search REQUEST", t.message!!)
                 Toast.makeText(getApplication(), "ERRO: não foi possível buscar por filme pesquisado.",Toast.LENGTH_LONG).show()
                 _status.value = FilmApiStatus.ERRO
+                _requestFilmList.value = FilmsJson( emptyArray( ) )
             }
         }
     }
@@ -216,16 +239,6 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
         withContext(Dispatchers.IO) { databaseDao.insertFilm(filmData) }
     }
 
-    fun isFavoriteFilm (id: Long) : Boolean {
-        var result = false
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                result = databaseDao.getFavorite(id)
-            }
-        }
-        return result
-    }
-
     // deletar film chamando função de suspensao
     fun deleteFilm(filmData: FilmData) {
         uiCoroutineScope.launch {
@@ -237,6 +250,12 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
         withContext(Dispatchers.IO) { databaseDao.deleteFilm(film) }
     }
 
+    // metodo para limpar o DB
+    fun clearDatabase () {
+        uiCoroutineScope.launch { withContext(Dispatchers.IO) { databaseDao.clear() } }
+    }
+
+    // retornar film buscado pelo ID
     fun getFilm (id: Long): FilmData {
         return runBlocking {
             withContext(Dispatchers.IO) {
@@ -245,9 +264,15 @@ class FilmViewModel (val databaseDao: FilmDao, app: Application) : AndroidViewMo
         }
     }
 
-    // metodo para limpar o DB
-    fun clearDatabase () {
-        uiCoroutineScope.launch { withContext(Dispatchers.IO) { databaseDao.clear() } }
+    // verificar se o filme esta no database
+    fun isFavoriteFilm (id: Long) : Boolean {
+        var result = false
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                result = databaseDao.getFavorite(id)
+            }
+        }
+        return result
     }
 
     override fun onCleared() {
