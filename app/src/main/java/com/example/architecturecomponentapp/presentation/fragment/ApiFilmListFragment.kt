@@ -7,32 +7,27 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.data.entity.FilmData
-import com.example.architecturecomponentapp.model.FilmViewModel
-import com.example.architecturecomponentapp.model.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 import com.example.architecturecomponentapp.util.FilmApiStatus
 
-class ApiFilmListFragment: Fragment(),
+class ApiFilmListFragment: BaseFilmListFragment(),
     FilmListAdapter.OnFilmClickListener,
-    View.OnClickListener,
-    SearchView.OnQueryTextListener,
-    SwipeRefreshLayout.OnRefreshListener {
+    View.OnClickListener {
 
-    private lateinit var mFilmRecylerViewApi: RecyclerView
-    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    /********************************************************
+     *  variaveis herdadas de BaseFilmListFragment:         *
+     *      mFilmRecyclerView: RecyclerView                 *
+     *      filmListAdapter: FilmListAdapter                *
+     *      mSwipeRefreshLayout: SwipeRefreshLayout         *
+     *      filmViewModel: FilmViewModel                    *
+     *******************************************************/
+
     private lateinit var mStatusImageView: ImageView
     private lateinit var mButtonFirstPage: Button
     private lateinit var mButtonBeforePage: Button
@@ -40,27 +35,13 @@ class ApiFilmListFragment: Fragment(),
     private lateinit var mButtonLastPage: Button
     private lateinit var mNumberPage: TextView
 
-    private lateinit var filmViewModel: FilmViewModel
-    private lateinit var filmListAdapter: FilmListAdapter
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate o layout desse fragment
-        val view = inflater.inflate(R.layout.fragment_api_film_list, container, false)
-        initViews(view)
 
-        // recuperar fonte de dados
-        val application = requireNotNull(this.activity).application
-        val dataSource = FilmDatabase.getInstance(application).filmDao
-        val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        //estou usando a referencia da activity pra pegar a busca
-        filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
+        // recuperar view da super classe
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        initViews(view!!)
 
-        // configurando RecyclerView
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
-        mFilmRecylerViewApi.layoutManager = layoutManager
-        mFilmRecylerViewApi.setHasFixedSize(true)
-
-        // chamada da lista de films da api
+        // chamar lista de filmes da api
         filmViewModel.requestFilmListApiService()
         connectionStatus()
 
@@ -72,7 +53,7 @@ class ApiFilmListFragment: Fragment(),
             // configurando adapter do RecyclerView
             it.movies?.let { list ->
                 filmListAdapter = FilmListAdapter(context = activity, filmListJson = list, onFilmClickListener = this)
-                mFilmRecylerViewApi.adapter = filmListAdapter
+                mFilmRecyclerView.adapter = filmListAdapter
             }
         })
 
@@ -80,8 +61,8 @@ class ApiFilmListFragment: Fragment(),
     }
 
     private fun initViews(v: View) {
-        // inicializacao do menu
-        mFilmRecylerViewApi = v.findViewById(R.id.film_list_api_recycle_view)
+
+        mFilmRecyclerView = v.findViewById(R.id.film_list_api_recycle_view)
         mStatusImageView = v.findViewById(R.id.film_list_api_status)
         mSwipeRefreshLayout = v.findViewById(R.id.film_list_api_layout)
         mSwipeRefreshLayout.setOnRefreshListener(this)
@@ -102,51 +83,33 @@ class ApiFilmListFragment: Fragment(),
         filmViewModel.status.observe(this, Observer {
             if (it == FilmApiStatus.LOADING ) {
                 // ocultar recyclerview e mostrar imagem de carregamento
-                mFilmRecylerViewApi.visibility = View.GONE
+                mFilmRecyclerView.visibility = View.GONE
                 mStatusImageView.visibility = View.VISIBLE
                 mStatusImageView.setImageResource( R.drawable.ic_api_request_128dp )
             }
             else if (it == FilmApiStatus.ERRO) {
                 // ocultar recyclerview e mostrar imagem de erro no carregamento
-                mFilmRecylerViewApi.visibility = View.GONE
+                mFilmRecyclerView.visibility = View.GONE
                 mStatusImageView.visibility = View.VISIBLE
                 mStatusImageView.setImageResource( R.drawable.ic_offline_128dp )
             }
             else if (it == FilmApiStatus.DONE) {
                 // ocultar imagem de carregamento e mostrar recyclerview
                 mStatusImageView.visibility  = View.GONE
-                mFilmRecylerViewApi.visibility = View.VISIBLE
+                mFilmRecyclerView.visibility = View.VISIBLE
             }
         })
     }
 
-    override fun onRefresh() {
-        filmViewModel.requestFilmListApiService()
-        mSwipeRefreshLayout.isRefreshing = false
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_main, menu)
-        val menuSearchItem: MenuItem? = menu?.findItem(R.id.search_menu)
-        val searchView: SearchView = menuSearchItem?.actionView as SearchView
-        searchView.setOnQueryTextListener(this)
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return false
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        Toast.makeText(activity, "buscando por $query", Toast.LENGTH_LONG ).show()
-        filmViewModel.searchFilmListApiService(query!!)
-        return true
-    }
-
+    /**
+     * funcao para controlar o click nos botoes da barra inferior de navegacao de paginas.
+     * Sendo possivel ate o momento passar, voltar, ir para a primeira, e ir para ultima pagina.
+     */
     override fun onClick(v: View?) {
         v?.let{
             when(it.id) {
                 R.id.film_list_api_button_first_page -> {
-                    filmViewModel.requestFilmListApiService()
+                    filmViewModel.requestFilmListApiService(1)
                 }
                 R.id.film_list_api_button_before_page -> {
                     filmViewModel.requestFilmListApiService( (mNumberPage.text.toString()).toLong() -1 )
