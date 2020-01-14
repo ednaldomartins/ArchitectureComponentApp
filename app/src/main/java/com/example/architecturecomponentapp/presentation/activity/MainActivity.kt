@@ -2,10 +2,6 @@ package com.example.architecturecomponentapp.presentation.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
@@ -19,9 +15,9 @@ import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.model.FilmViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.fragment.ApiFilmListFragment
-import com.example.architecturecomponentapp.presentation.fragment.FilmListFragment
+import com.example.architecturecomponentapp.presentation.fragment.DataFilmListFragment
 
-class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var filmViewModel: FilmViewModel
 
@@ -42,7 +38,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         val fragmentAdapter = FragmentPagerItemAdapter(
             supportFragmentManager, FragmentPagerItems.with(this)
                 .add("Destaques", ApiFilmListFragment::class.java)
-                .add("Favoritos", FilmListFragment::class.java)
+                .add("Favoritos", DataFilmListFragment::class.java)
                 .create()
         )
         val viewPager: ViewPager = findViewById(R.id.main_view_pager)
@@ -50,31 +46,6 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         val tabLayout: SmartTabLayout = findViewById(R.id.main_tab_layout)
         tabLayout.setViewPager(viewPager)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        val menuSearchItem: MenuItem? = menu?.findItem(R.id.search_menu)
-        val searchView: SearchView = menuSearchItem?.actionView as SearchView
-        searchView.setOnQueryTextListener(this)
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return false
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        Toast.makeText(this, "buscando por $query", Toast.LENGTH_LONG ).show()
-        val fragments = supportFragmentManager.fragments
-        // verificar qual fragment esta visivel ao usuario
-        if ( fragments[0].userVisibleHint ) {
-            filmViewModel.searchFilmListApiService(query!!)
-        }
-        else if ( fragments[1].userVisibleHint ) {
-            filmViewModel.searchFilmDatabase(query!!)
-        }
-        return true
     }
 
 }
