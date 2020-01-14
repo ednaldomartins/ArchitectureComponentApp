@@ -38,7 +38,10 @@ interface FilmApiService {
 
     // buscar lista de filmes na API pelo token search
     @GET("search/movie${Api.UNIQUE_KEY}${Api.LANGUAGE}")
-    fun callSearchMovieList(@Query("query")search: String): Deferred<FilmsJson>
+    fun callSearchMovieList(
+        @Query("page") page: Long,
+        @Query("query") search: String
+    ): Deferred<FilmsJson>
 
     // chamar lista de filmes por categoria
     @GET("list/{genre}${Api.UNIQUE_KEY}${Api.LANGUAGE}")
