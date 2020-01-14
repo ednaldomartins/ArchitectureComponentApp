@@ -5,45 +5,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
-import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class FilmListFragment: Fragment(),
-    FilmListAdapter.OnFilmClickListener,
-    SwipeRefreshLayout.OnRefreshListener {
+class DataFilmListFragment: BaseFilmListFragment(),
+    FilmListAdapter.OnFilmClickListener {
 
-    private lateinit var mFilmList: RecyclerView
-    private lateinit var filmListAdapter: FilmListAdapter
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-
-    private lateinit var filmViewModel: FilmViewModel
+    /********************************************************
+     *  variaveis herdadas de BaseFilmListFragment:         *
+     *      mFilmRecyclerView: RecyclerView                 *
+     *      filmListAdapter: FilmListAdapter                *
+     *      mSwipeRefreshLayout: SwipeRefreshLayout         *
+     *      filmViewModel: FilmViewModel                    *
+     *******************************************************/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate o layout desse fragment
-        val view = inflater.inflate(R.layout.fragment_api_film_list, container, false)
-        initViews(view)
-
-        // recuperar fonte de dados
-        val application = requireNotNull(this.activity).application
-        val dataSource = FilmDatabase.getInstance(application).filmDao
-        val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
-
-        // configurando RecyclerView
-        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
-        mFilmList.layoutManager = layoutManager
-        mFilmList.setHasFixedSize(true)
+        // recuperar view da super classe
+        val view = super.onCreateView(inflater, container, savedInstanceState)
 
         filmViewModel.filmsDataBase?.observe(this, Observer {
             filmViewModel.setPresentationDatabase(it)
@@ -56,22 +38,11 @@ class FilmListFragment: Fragment(),
                 filmListJson = Array( it.size) { FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf()) },
                 filmListData = it,
                 onFilmClickListener = this)
-            mFilmList.adapter = filmListAdapter
+            mFilmRecyclerView.adapter = filmListAdapter
+
         })
 
         return view
-    }
-
-    private fun initViews(v: View) {
-        mFilmList = v.findViewById(R.id.film_list_api_recycle_view)
-        swipeRefresh = v.findViewById(R.id.film_list_api_layout)
-        swipeRefresh.setOnRefreshListener(this)
-    }
-
-
-    override fun onRefresh() {
-        filmViewModel.loadFilmDatabase()
-        swipeRefresh.isRefreshing = false
     }
 
     override fun onFilmClick(filmId: Long?, position: Int) {
