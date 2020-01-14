@@ -1,10 +1,10 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +19,14 @@ import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 /**
  * Classe base para os outros fragments que apresentam lista de filmes usando RecyclerView
  */
-open class BaseFilmListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+open class BaseFilmListFragment :
+    Fragment(),
+    SwipeRefreshLayout.OnRefreshListener,
+    SearchView.OnQueryTextListener {
 
     protected lateinit var mFilmRecyclerView: RecyclerView
     protected lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    protected lateinit var mSearchView: SearchView
 
     protected lateinit var filmViewModel: FilmViewModel
     protected lateinit var filmListAdapter: FilmListAdapter
@@ -31,6 +35,7 @@ open class BaseFilmListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListen
         // Inflate o layout desse fragment
         val view = inflater.inflate(R.layout.fragment_api_film_list, container, false)
         initViews(view)
+        setHasOptionsMenu(true)
 
         // recuperar fonte de dados
         val application = requireNotNull(this.activity).application
@@ -55,6 +60,22 @@ open class BaseFilmListFragment : Fragment(), SwipeRefreshLayout.OnRefreshListen
     override fun onRefresh() {
         filmViewModel.loadFilmDatabase()
         mSwipeRefreshLayout.isRefreshing = false
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_main, menu)
+        val mMenuSearchItem: MenuItem? = menu?.findItem(R.id.search_menu)
+        mSearchView = mMenuSearchItem?.actionView as SearchView
+        mSearchView.setOnQueryTextListener(this)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return false
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
     }
 
 }

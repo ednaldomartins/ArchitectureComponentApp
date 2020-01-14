@@ -36,11 +36,9 @@ class ApiFilmListFragment: BaseFilmListFragment(),
     private lateinit var mNumberPage: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         // recuperar view da super classe
         val view = super.onCreateView(inflater, container, savedInstanceState)
         initViews(view!!)
-
         // chamar lista de filmes da api
         filmViewModel.requestFilmListApiService()
         connectionStatus()
@@ -61,11 +59,7 @@ class ApiFilmListFragment: BaseFilmListFragment(),
     }
 
     private fun initViews(v: View) {
-
-        mFilmRecyclerView = v.findViewById(R.id.film_list_api_recycle_view)
         mStatusImageView = v.findViewById(R.id.film_list_api_status)
-        mSwipeRefreshLayout = v.findViewById(R.id.film_list_api_layout)
-        mSwipeRefreshLayout.setOnRefreshListener(this)
         // inicializacao dos botoes de navegacao de paginas
         mButtonFirstPage = v.findViewById(R.id.film_list_api_button_first_page)
         mButtonFirstPage.setOnClickListener(this)
@@ -77,6 +71,26 @@ class ApiFilmListFragment: BaseFilmListFragment(),
         mButtonLastPage.setOnClickListener(this)
         // localizando o textview do numero da pagina atual
         mNumberPage = v.findViewById(R.id.film_list_api_number_page)
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText == "" && filmViewModel.query != "")
+            filmViewModel.requestFilmListApiService(1)
+
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        filmViewModel.searchFilmListApiService(query!!)
+        // esconder teclado
+        mSearchView.clearFocus()
+        return true
+    }
+
+    override fun onOptionsMenuClosed(menu: Menu?) {
+        Toast.makeText(activity, " teste", Toast.LENGTH_LONG).show()
+        filmViewModel.requestFilmListApiService(1)
+        super.onOptionsMenuClosed(menu)
     }
 
     private fun connectionStatus () {

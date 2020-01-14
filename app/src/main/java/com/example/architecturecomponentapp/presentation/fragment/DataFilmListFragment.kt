@@ -45,6 +45,20 @@ class DataFilmListFragment: BaseFilmListFragment(),
         return view
     }
 
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText == "")
+            filmViewModel.loadFilmDatabase()
+
+        return true
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        filmViewModel.searchFilmDatabase(query!!)
+        // esconder teclado
+        mSearchView.clearFocus()
+        return true
+    }
+
     override fun onFilmClick(filmId: Long?, position: Int) {
         val intent: Intent = Intent(activity, FilmDetailsActivity::class.java)
         val film = filmViewModel.getFilm(filmId!!)
