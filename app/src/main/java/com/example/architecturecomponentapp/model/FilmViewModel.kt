@@ -1,7 +1,7 @@
 package com.example.architecturecomponentapp.model
 
 import android.app.Application
-import android.util.Log
+import android.util.Log.e
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -39,12 +39,15 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
     // total de paginas
     private var _totalPages: Long = 0
     val totalPages: Long get() = _totalPages
+    // query da pagina da API
+    private var _query: String = ""
+    val query: String get() = _query
 
     /**
-     *  @param _filmsDatabase tem acesso a lista de filmes do database local.
-     *  @param filmsDatabase deve ser usado para qualquer acesso a esse database local de filmes,
+     *  filmsDatabase tem acesso a lista de filmes do database local.
+     *  filmsDatabase deve ser usado para qualquer acesso a esse database local de filmes,
      *  por parte de qualquer fragments ou activities atraves do seu get().
-     *  @param mementoPresentationFilmList foi criado para manter uma copia do estado atual do
+     *  mementoPresentationFilmList foi criado para manter uma copia do estado atual do
      *  database de filmes. O database local de filmes retona um LiveData da lista de filmes, que so pode
      *  pode ser acessado atraves do observador. sempre que o observador sinalizar uma modificacao
      *  nesse database, ele deve repassar o "it" referente a essa lista de filmes, para que o tanto
@@ -52,7 +55,7 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
      *  memento aqui e manter uma copia da lista de filmes do database mesmo apos uma busca, sendo
      *  assim, caso o presentationFilmList precise reapresentar a lista do database, ele possa fazer
      *  isso realizando uma copia do memento.
-     *  @param presentationFilmList deve apenas apresentar a lista de filmes do database na tela
+     *  presentationFilmList deve apenas apresentar a lista de filmes do database na tela
      *  pelo ViewHolder, seja atraves do proprio "it" referente a lista de filmes database, ou
      *  pela newList criada atraves do filtro de pesquisa, que recebe essa newLista apos ser
      *  realizado esse filtro nos filmes do database, atraves do mementoPresentationFilmList.
@@ -69,12 +72,11 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
     init {
         uiCoroutineScope.launch {
             val request= FilmsApi.retrofitService.callGenreMovieApi()
-            try {
-                listGenre = request.await().genreList
-            }
-            catch (t: Throwable) {
-                Log.e("ERRO - FILM REQUEST", t.message!!)
-                listGenre = emptyArray()
+            listGenre = try {
+                request.await().genreList
+            } catch (t: Throwable) {
+                e("ERRO - FILM REQUEST", t.message!!)
+                emptyArray()
             }
         }
     }
@@ -90,7 +92,7 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
                 _requestFilm.value = requestResult
             }
             catch (t: Throwable) {
-                Log.e("ERRO - FILM REQUEST", t.message!!)
+                e("ERRO - FILM REQUEST", t.message!!)
                 _requestFilm.value = FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf())
             }
         }
@@ -98,10 +100,25 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
 
     // recupera uma lista de filmes da API
     fun requestFilmListApiService (page: Long = _actualPage) {
+        /*
+        *   atualizar a query: caso o usuario tenha enviado uma, a query sera atualizada para a
+        *   nova query requisitada. quando o usuario apenas cancela uma pesquisa, ou a consulta
+        *   vem da pagina inicial, o query = ""
+        */
+        if (_query == "") {
+            requestPopularFilmList(page)
+        }
+        else {
+            requestSearchedFilmList(page)
+        }
+    }
+
+    // recuperar a lista de filmes mais populares da API
+    private fun requestPopularFilmList(page: Long) {
+        //receber a chamada da API sem bloquear a thread princial
         uiCoroutineScope.launch {
-            //receber a chamada da API sem bloquear a thread princial
-            val getCallDeferred = FilmsApi.retrofitService.callPopularMovieListApi(page)
             try {
+                val getCallDeferred = FilmsApi.retrofitService.callPopularMovieListApi(page)
                 _status.value = FilmApiStatus.LOADING
                 val resultList = getCallDeferred.await()
                 _requestFilmList.value = resultList
@@ -112,7 +129,7 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
                 _status.value = FilmApiStatus.DONE
             }
             catch (t: Throwable) {
-                Log.e("ERRO - REQUEST", t.message!!)
+                e("ERRO - REQUEST", t.message!!)
                 Toast.makeText(getApplication(), "ERRO: não foi possível recuperar lista de filmes.",Toast.LENGTH_LONG).show()
                 _status.value = FilmApiStatus.ERRO
                 _requestFilmList.value = FilmsJson( emptyArray( ) )
@@ -121,10 +138,10 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
     }
 
     // recupera uma lista de filmes da API baseado na busca do usuario
-    fun searchFilmListApiService (search: String) {
+    private fun requestSearchedFilmList (page: Long = _actualPage) {
         uiCoroutineScope.launch {
             //receber a chamada da API sem bloquear a thread princial
-            val getCallDeferred = FilmsApi.retrofitService.callSearchMovieList(search)
+            val getCallDeferred = FilmsApi.retrofitService.callSearchMovieList(page, query)
             try {
                 _status.value = FilmApiStatus.LOADING
                 // pegar lista de filmes da API pela busca
@@ -143,18 +160,23 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
 
             }
             catch(t: JsonDataException) {
-                Log.e("ERRO - search REQUEST", t.message!!)
+                e("ERRO - search REQUEST", t.message!!)
                 Toast.makeText(getApplication(), "ERRO: problema com os dados dos filmes recuperados.",Toast.LENGTH_LONG).show()
                 _status.value = FilmApiStatus.ERRO
                 _requestFilmList.value = FilmsJson( emptyArray( ) )
             }
             catch (t: Throwable) {
-                Log.e("ERRO - search REQUEST", t.message!!)
+                e("ERRO - search REQUEST", t.message!!)
                 Toast.makeText(getApplication(), "ERRO: não foi possível buscar por filme pesquisado.",Toast.LENGTH_LONG).show()
                 _status.value = FilmApiStatus.ERRO
                 _requestFilmList.value = FilmsJson( emptyArray( ) )
             }
         }
+    }
+
+    fun setSearch (query: String = "") {
+        // se nao receber consulta, entao aplica consulta limpa.
+        _query = query
     }
 
     fun loadFilmDatabase () {
@@ -177,12 +199,12 @@ class FilmViewModel (private val databaseDao: FilmDao, app: Application) : Andro
             mementoPresentationFilmList?.value?.let {
                 // caso nao esteja vazio, criaremos um vetor que ira criar uma nova lista de apresentacao
                 val newList: MutableList<FilmData>? = mutableListOf()
+                // se contem parte ou toda a palavra deve adicionar a nova lista
                 for (i in 0 until it.size) {
-                    // se contem parte ou toda a palavra deve adicionar a nova lista
                     if ( it[i].title.toLowerCase().contains(query.toLowerCase()) )
                         newList?.add(it[i])
+                    // lista de apresentacao recebe a nova lista que foi buscada
                 }
-                // lista de apresentacao recebe a nova lista que foi buscada
                 presentationFilmList?.value = newList
             }
         }
