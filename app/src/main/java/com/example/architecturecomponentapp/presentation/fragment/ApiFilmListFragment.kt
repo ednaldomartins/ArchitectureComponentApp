@@ -74,14 +74,17 @@ class ApiFilmListFragment: BaseFilmListFragment(),
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText == "" && filmViewModel.query != "")
+        if (newText == "" && filmViewModel.query != "") {
+            // limpar consulta
+            filmViewModel.setSearch(newText)
             filmViewModel.requestFilmListApiService(1)
-
+        }
         return true
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        filmViewModel.searchFilmListApiService(query!!)
+        filmViewModel.setSearch(query!!)
+        filmViewModel.requestFilmListApiService(1)
         // esconder teclado
         mSearchView.clearFocus()
         return true
@@ -126,10 +129,10 @@ class ApiFilmListFragment: BaseFilmListFragment(),
                     filmViewModel.requestFilmListApiService(1)
                 }
                 R.id.film_list_api_button_before_page -> {
-                    filmViewModel.requestFilmListApiService( (mNumberPage.text.toString()).toLong() -1 )
+                    filmViewModel.requestFilmListApiService( filmViewModel.actualPage - 1 )
                 }
                 R.id.film_list_api_button_next_page -> {
-                    filmViewModel.requestFilmListApiService( mNumberPage.text.toString().toLong() +1 )
+                    filmViewModel.requestFilmListApiService( filmViewModel.actualPage + 1 )
                 }
                 R.id.film_list_api_button_last_page -> {
                     filmViewModel.requestFilmListApiService( filmViewModel.totalPages )
@@ -139,7 +142,7 @@ class ApiFilmListFragment: BaseFilmListFragment(),
     }
 
     override fun onFilmClick(filmId: Long?, position: Int) {
-        val intent: Intent = Intent(activity, FilmDetailsActivity::class.java)
+        val intent = Intent(activity, FilmDetailsActivity::class.java)
         // verificar se esta nos favoritos do database do usuario
         val isFavorite = filmViewModel.isFavoriteFilm(filmId!!)
         if (isFavorite) {
