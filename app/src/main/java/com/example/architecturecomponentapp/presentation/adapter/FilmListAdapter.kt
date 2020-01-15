@@ -51,15 +51,15 @@ class FilmListAdapter (
         }
 
         // nome do filme. alterar para filmes com nome muito grande para nao passar de duas linhas
-        if (film.title.length > 35)
-            holder.filmTitle.text = ("${film.title.subSequence(0,35)}...")
+        if (film.title?.length ?: 0 > 35)
+            holder.filmTitle.text = ("${film.title?.subSequence(0,35)}...")
         else
             holder.filmTitle.text = film.title
 
         // alterar o formato da data para dd/mm/aaaa
         val date = film.releaseDate
         holder.filmReleaseDate.text =
-            ("${date.subSequence(8,10)}/${date.subSequence(5,7)}/${date.subSequence(0,4)}")
+            ("${date?.subSequence(8,10)}/${date?.subSequence(5,7)}/${date?.subSequence(0,4)}")
 
         // vizualizacoes do filme na API
         holder.filmPopularity.text = film.popularity

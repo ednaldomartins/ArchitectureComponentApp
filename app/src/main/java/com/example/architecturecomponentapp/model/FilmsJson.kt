@@ -17,46 +17,46 @@ class FilmsJson (
 {
     class FilmJson (
         @Json(name = "id")
-        var id: Long = -1L,
+        var id: Long? = -1L,
 
         @Json(name = "title")
-        var title: String = "Título do Filme",
+        var title: String? = "Título do Filme",
 
         @Json(name = "release_date")
-        var releaseDate: String = "aaaa-mm-dd",
+        var releaseDate: String? = "aaaa-mm-dd",
 
         @Json(name = "genres")
         var genres: Array<Genres.Genre>?,
 
         @Json(name = "homepage")
-        var homepage: String = "www.google.com",
+        var homepage: String? = "www.google.com",
 
         @Json(name = "original_language")
-        var originalLanguage: String = "",
+        var originalLanguage: String? = "",
 
         @Json(name = "overview")
-        var overview: String = "",
+        var overview: String? = "",
 
         @Json(name = "popularity")
-        var popularity: String = "0",
+        var popularity: String? = "0",
 
         @Json(name = "poster_path")
-        var posterPath: String = "",
+        var posterPath: String? = "",
 
         @Json(name = "status")
-        var status: String = "",
+        var status: String? = "",
 
         @Json(name = "revenue")
-        var revenue: Long = -1,
+        var revenue: Long? = 0,
 
         @Json(name = "budget")
-        var budget: Long = -1,
+        var budget: Long? = 0,
 
         @Json(name = "runtime")
-        var runtime: Int = -1,
+        var runtime: Int? = 0,
 
         @Json(name = "vote_average")
-        var voteAverage: Float = .0f,
+        var voteAverage: Float? = .0f,
 
         @Json(name = "production_companies")
         var productionCompanies: Array<ProductionCompanies.ProductionCompany>?

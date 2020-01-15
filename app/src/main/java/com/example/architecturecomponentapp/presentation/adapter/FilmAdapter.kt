@@ -19,20 +19,20 @@ class FilmAdapter {
                 e também poder salvar o objeto FilmData no banco de dados Room.
              */
             return FilmData(
-                id = filmJson.id,
-                title = filmJson.title,
-                releaseDate = filmJson.releaseDate,
+                id = filmJson.id ?: -1,
+                title = filmJson.title ?: "Sem Titulo",
+                releaseDate = filmJson.releaseDate ?: "aaaa-mm-dd",
                 genres = genresString,
-                homepage = filmJson.homepage,
-                originalLanguage = filmJson.originalLanguage,
-                overview = filmJson.overview,
-                popularity = filmJson.popularity,
-                posterPath = filmJson.posterPath,
-                status = filmJson.status,
-                revenue = filmJson.revenue,
-                budget = filmJson.budget,
-                runtime = filmJson.runtime,
-                voteAverage = filmJson.voteAverage,
+                homepage = filmJson.homepage ?: "www.google.com",
+                originalLanguage = filmJson.originalLanguage ?: "",
+                overview = filmJson.overview ?: "",
+                popularity = filmJson.popularity ?: "0",
+                posterPath = filmJson.posterPath ?: "",
+                status = filmJson.status ?: "",
+                revenue = filmJson.revenue ?: 0,
+                budget = filmJson.budget ?: 0,
+                runtime = filmJson.runtime ?: 0,
+                voteAverage = filmJson.voteAverage ?: 0F,
                 productionCompanies = companiesString
             )
         }
