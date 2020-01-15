@@ -43,11 +43,10 @@ class ApiFilmListFragment: BaseFilmListFragment(),
         filmViewModel.requestFilmListApiService()
         connectionStatus()
 
+        // observador da requiscao
         filmViewModel.responseFilmList.observe(this, Observer {
-            // setando o numero da pagina atual
-            // FALTA CONFIGURAR CLICK DOS BOTOES DE PAGINAS PARA NAO PERMITIR PASSAR OU VOLTAR QUANDO FOR O CASO
-            // CRIAR UM METODO E CONFIGURAR TUDO NESSE METODO SEPARADO
-            mNumberPage.text = it.page.toString()
+            // atulizar estados dos botoes de alterar paginas
+            refreshPageButton(it.page)
             // configurando adapter do RecyclerView
             it.movies?.let { list ->
                 filmListAdapter = FilmListAdapter(context = activity, filmListJson = list, onFilmClickListener = this)
@@ -71,6 +70,32 @@ class ApiFilmListFragment: BaseFilmListFragment(),
         mButtonLastPage.setOnClickListener(this)
         // localizando o textview do numero da pagina atual
         mNumberPage = v.findViewById(R.id.film_list_api_number_page)
+    }
+
+    private fun refreshPageButton(actualPage: Long) {
+        // setando o numero atual da pagina na apresentacao
+        mNumberPage.text = actualPage.toString()
+        /** sempre que a requisicao muda, a pagina atual podera ser alterada, entao...*/
+        // se nao estiver visivel, entao tornar
+        if (mButtonFirstPage.visibility != View.VISIBLE) {
+            mButtonFirstPage.visibility = View.VISIBLE
+            mButtonBeforePage.visibility = View.VISIBLE
+        }
+        else if (mButtonLastPage.visibility != View.VISIBLE) {
+            mButtonLastPage.visibility = View.VISIBLE
+            mButtonNextPage.visibility = View.VISIBLE
+        }
+        /* apos tornar os botoes visiveis, verificar: */
+        // se a página 1 for a atual, entao bloquear os botoes de voltar pagina
+        if (actualPage == 1L) {
+            mButtonFirstPage.visibility = View.INVISIBLE
+            mButtonBeforePage.visibility = View.INVISIBLE
+        }
+        // se a ultima pagina for a atual, entao bloquear os botoes de avancar pagina
+        else if (actualPage == filmViewModel.totalPages) {
+            mButtonLastPage.visibility = View.INVISIBLE
+            mButtonNextPage.visibility = View.INVISIBLE
+        }
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
