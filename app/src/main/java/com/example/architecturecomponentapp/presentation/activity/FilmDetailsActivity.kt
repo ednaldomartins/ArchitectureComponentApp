@@ -40,22 +40,31 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun submitDetails(filmData: FilmData) {
+        // configurando poster
         if (filmData.posterPath != "") {
             val imgUri = Uri.parse( Api.URL_IMAGE + filmData.posterPath )
             Glide.with(this.film_details_poster_path.context).load(imgUri).into(this.film_details_poster_path)
         }
+        else
+            film_details_poster_path.setImageDrawable(getDrawable(R.drawable.ic_local_movies_24dp))
 
-        film_detail_release_date.text = filmData.releaseDate
+        // configurandp data
+        val date = film.releaseDate
+        if (date.length == 10)
+            film_detail_release_date.text = ("${date.subSequence(8,10)}/${date.subSequence(5,7)}/${date.subSequence(0,4)}")
+        else
+            film_detail_release_date.text = resources.getString(R.string.detail_date)
+
         film_detail_runtime.text = ( (filmData.runtime/60).toString() + "h" + (filmData.runtime%60).toString() + "m" )
         film_detail_genres.text = filmData.genres
         film_detail_original_language.text = ( filmData.originalLanguage.toUpperCase() )
-        film_detail_popularity.text = (filmData.popularity + "  Visualizações.")
+        film_detail_popularity.text = ( resources.getString(R.string.detail_popularity) + " " + filmData.popularity )
         film_detail_average.text = (" ${filmData.voteAverage} ")
         film_details_title.text = filmData.title
         film_detail_overview.text = filmData.overview
         film_detail_production_companies.text = filmData.productionCompanies
-        film_detail_budget.text = ("Despesas: " + filmData.budget + "US$")
-        film_detail_revenue.text = ("Receita: " + filmData.revenue + "US$")
+        film_detail_budget.text = (resources.getString(R.string.detail_budget) + " " + filmData.budget + resources.getString(R.string.detail_dolar) )
+        film_detail_revenue.text = (resources.getString(R.string.detail_revenue) + " " + filmData.revenue + resources.getString(R.string.detail_dolar) )
         film_detail_homepage.text = filmData.homepage
     }
 

@@ -8,15 +8,19 @@
 
     <!-- Textos dos detalhes do filme -->
     <string name="detail_title">Título do Filme</string>
+    <string name="detail_release">Lançamento: </string>
     <string name="detail_date">dd/mm/aaaa</string>
     <string name="detail_runtime">0h00m</string>
     <string name="detail_average"> 0.0 </string>
     <string name="detail_overview">Análise do filme</string>
     <string name="detail_genres">Gêneros</string>
     <string name="detail_popularity">Popularidade: </string>
+    <string name="detail_popularity_number">0</string>
     <string name="detail_language">LAN</string>
     <string name="detail_production">Produção</string>
-    <string name="detail_dolar">0US$</string>
+    <string name="detail_budget">Despesas: </string>
+    <string name="detail_revenue">Receita: </string>
+    <string name="detail_dolar">US$</string>
     <string name="detail_homepage">www.google.com</string>
 
 </resources>
