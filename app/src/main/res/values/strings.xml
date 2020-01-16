@@ -1,6 +1,22 @@
 <resources>
-    <string name="app_name">ArchitectureComponentApp</string>
+    <string name="app_name">ArchitectureComponent</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Textos do menu_main -->
+    <string name="menu_search">Pesquisa</string>
+    <string name="menu_config">Configurações</string>
+    <string name="menu_help">Ajuda</string>
+
+    <!-- Textos dos detalhes do filme -->
+    <string name="detail_title">Título do Filme</string>
+    <string name="detail_date">dd/mm/aaaa</string>
+    <string name="detail_runtime">0h00m</string>
+    <string name="detail_average"> 0.0 </string>
+    <string name="detail_overview">Análise do filme</string>
+    <string name="detail_genres">Gêneros</string>
+    <string name="detail_popularity">Popularidade: </string>
+    <string name="detail_language">LAN</string>
+    <string name="detail_production">Produção</string>
+    <string name="detail_dolar">0US$</string>
+    <string name="detail_homepage">www.google.com</string>
+
 </resources>
