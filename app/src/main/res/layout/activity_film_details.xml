@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".presentation.activity.FilmDetailsActivity">
 
         <ImageView
@@ -36,7 +36,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="Nome do Filme"
+                android:text="@string/detail_title"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/title_size"
                 android:textStyle="bold"
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="dd/mm/aaaa"
+                android:text="@string/detail_date"
                 android:textColor="@color/colorSecondaryText"
                 android:textSize="@dimen/text_secondary_details_size"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -63,11 +63,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:text="0h00m"
+                android:layout_marginEnd="16dp"
+                android:text="@string/detail_runtime"
                 android:textColor="@color/colorSecondaryText"
                 android:textSize="@dimen/text_secondary_details_size"
-                app:layout_constraintEnd_toStartOf="@+id/film_detail_original_language"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/film_details_poster_path"
                 app:layout_constraintTop_toBottomOf="@+id/film_detail_release_date" />
 
@@ -79,7 +79,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@color/colorAverage"
-                android:text=" 00.0 "
+                android:text="@string/detail_average"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/text_primary_details_size"
                 android:textStyle="bold"
@@ -97,64 +97,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/film_details_title"
                 app:srcCompat="@drawable/ic_overview_32dp" />
 
-        <TextView
-                android:id="@+id/film_detail_overview"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="Visão geral"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/text_primary_details_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/film_details_title" />
-
-        <TextView
-                android:id="@+id/film_detail_genres"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="Gêneros: "
-                android:textColor="@color/colorSecondaryText"
-                android:textSize="@dimen/text_secondary_details_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/film_details_poster_path"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_runtime" />
-
-        <TextView
-                android:id="@+id/film_detail_popularity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="0 Visualizações"
-                android:textColor="@color/colorSecondaryText"
-                android:textSize="@dimen/text_secondary_details_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/film_details_poster_path"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_genres" />
-
-        <TextView
-                android:id="@+id/film_detail_original_language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:text="BR"
-                android:textColor="@color/colorSecondaryText"
-                android:textSize="@dimen/text_secondary_details_size"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_release_date" />
-
         <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="wrap_content"
@@ -165,20 +107,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/film_detail_overview"
                 app:srcCompat="@drawable/ic_production_company_32dp" />
 
-        <TextView
-                android:id="@+id/film_detail_production_companies"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:text="Empresas de Produção"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/text_primary_details_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView3"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_overview" />
-
         <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
@@ -188,33 +116,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/film_detail_production_companies"
                 app:srcCompat="@drawable/ic_money_32dp" />
-
-        <TextView
-                android:id="@+id/film_detail_budget"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:text="0U$"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/text_primary_details_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_production_companies" />
-
-        <TextView
-                android:id="@+id/film_detail_revenue"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="0U$"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="@dimen/text_primary_details_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/film_detail_budget" />
 
         <ImageView
                 android:id="@+id/imageView8"
@@ -229,18 +130,118 @@
                 app:srcCompat="@drawable/ic_homepage_32dp" />
 
         <TextView
-                android:id="@+id/film_detail_homepage"
+                android:id="@+id/film_detail_overview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:justificationMode="inter_word"
+                android:text="@string/detail_overview"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_primary_details_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/film_details_title" />
+
+        <TextView
+                android:id="@+id/film_detail_genres"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
+                android:text="@string/detail_genres"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/text_secondary_details_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/film_details_poster_path"
+                app:layout_constraintTop_toBottomOf="@+id/film_detail_runtime" />
+
+        <TextView
+                android:id="@+id/film_detail_popularity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/detail_popularity"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/text_secondary_details_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/film_details_poster_path"
+                app:layout_constraintTop_toBottomOf="@+id/film_detail_genres" />
+
+        <TextView
+                android:id="@+id/film_detail_original_language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/detail_language"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/text_secondary_details_size"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/film_detail_revenue" />
+
+        <TextView
+                android:id="@+id/film_detail_production_companies"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/detail_production"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_primary_details_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintTop_toBottomOf="@+id/film_detail_overview" />
+
+        <TextView
+                android:id="@+id/film_detail_budget"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/detail_dolar"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_primary_details_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toBottomOf="@+id/film_detail_production_companies" />
+
+        <TextView
+                android:id="@+id/film_detail_revenue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/detail_dolar"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/text_primary_details_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toBottomOf="@+id/film_detail_budget" />
+
+        <TextView
+                android:id="@+id/film_detail_homepage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="24dp"
-                android:text="Página Oficial"
+                android:text="@string/detail_homepage"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/text_primary_details_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/film_detail_original_language"
                 app:layout_constraintStart_toEndOf="@+id/imageView8"
                 app:layout_constraintTop_toBottomOf="@+id/film_detail_revenue" />
 
@@ -249,7 +250,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 android:background="@drawable/ic_star_not_favorite_32dp"
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
