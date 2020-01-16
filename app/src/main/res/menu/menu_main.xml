@@ -4,22 +4,22 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/search_menu"
-        android:title="Pesquisa"
-        android:icon="@drawable/ic_search_menu_32dp"
-        app:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/menu_search"
+        android:icon="@drawable/ic_search_menu_24dp"
+        app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         />
 
     <item
         android:id="@+id/config_menu"
-        android:title="Configurações"
+        android:title="@string/menu_config"
         app:showAsAction="never"
         />
 
     <item
-            android:id="@+id/help_menu"
-            android:title="Ajuda"
-            app:showAsAction="never"
-            />
+        android:id="@+id/help_menu"
+        android:title="@string/menu_help"
+        app:showAsAction="never"
+        />
 
 </menu>
