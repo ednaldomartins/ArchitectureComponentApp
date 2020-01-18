@@ -2,7 +2,6 @@ package com.example.architecturecomponentapp.presentation.fragment
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProviders
@@ -12,7 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
-import com.example.architecturecomponentapp.model.FilmViewModel
+import com.example.architecturecomponentapp.model.FilmApiViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
@@ -28,7 +27,8 @@ open class BaseFilmListFragment :
     protected lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     protected lateinit var mSearchView: SearchView
 
-    protected lateinit var filmViewModel: FilmViewModel
+    //protected lateinit var filmViewModel: FilmApiViewModel
+    protected lateinit var filmViewModelFactory: FilmViewModelFactory
     protected lateinit var filmListAdapter: FilmListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,8 +40,8 @@ open class BaseFilmListFragment :
         // recuperar fonte de dados
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
-        val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmViewModel::class.java)
+        filmViewModelFactory = FilmViewModelFactory(dataSource, application)
+        //filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmApiViewModel::class.java)
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
@@ -58,7 +58,6 @@ open class BaseFilmListFragment :
     }
 
     override fun onRefresh() {
-        filmViewModel.loadFilmDatabase()
         mSwipeRefreshLayout.isRefreshing = false
     }
 
