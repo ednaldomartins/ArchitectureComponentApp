@@ -6,13 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class DataFilmListFragment: BaseFilmListFragment(),
+class DataFilmListFragment:
+    BaseFilmListFragment(),
     FilmListAdapter.OnFilmClickListener {
 
     /********************************************************
@@ -20,13 +22,16 @@ class DataFilmListFragment: BaseFilmListFragment(),
      *      mFilmRecyclerView: RecyclerView                 *
      *      filmListAdapter: FilmListAdapter                *
      *      mSwipeRefreshLayout: SwipeRefreshLayout         *
-     *      filmViewModel: FilmViewModel                    *
+     *      filmViewModelFactory: FilmViewModelFactory      *
      *******************************************************/
+
+    private lateinit var filmViewModel: FilmDataViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
+        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(FilmDataViewModel::class.java)
         filmViewModel.filmsDataBase?.observe(this, Observer {
             filmViewModel.setPresentationDatabase(it)
         })
@@ -43,6 +48,12 @@ class DataFilmListFragment: BaseFilmListFragment(),
         })
 
         return view
+    }
+
+
+    override fun onRefresh() {
+        filmViewModel.loadFilmDatabase()
+        super.onRefresh()   //isRefreshing = false
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
