@@ -8,9 +8,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.model.FilmApiViewModel
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
@@ -25,7 +27,7 @@ class ApiFilmListFragment: BaseFilmListFragment(),
      *      mFilmRecyclerView: RecyclerView                 *
      *      filmListAdapter: FilmListAdapter                *
      *      mSwipeRefreshLayout: SwipeRefreshLayout         *
-     *      filmViewModel: FilmViewModel                    *
+     *      filmViewModelFactory: FilmViewModelFactory      *
      *******************************************************/
 
     private lateinit var mStatusImageView: ImageView
@@ -35,9 +37,12 @@ class ApiFilmListFragment: BaseFilmListFragment(),
     private lateinit var mButtonLastPage: Button
     private lateinit var mNumberPage: TextView
 
+    private lateinit var filmViewModel: FilmApiViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe
         val view = super.onCreateView(inflater, container, savedInstanceState)
+        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(FilmApiViewModel::class.java)
         initViews(view!!)
         // chamar lista de filmes da api
         filmViewModel.requestFilmListApiService()
@@ -181,19 +186,17 @@ class ApiFilmListFragment: BaseFilmListFragment(),
             // localizar film na API usando o id
             filmViewModel.requestFilmApiService(filmId)
             // apos os dados serem recuperados da API instanciar film
-            var film: FilmData? = null
+            var film = FilmData()
             filmViewModel.responseFilmJson.value?.let { film = FilmAdapter.adaptJsonToData(it) }
-            film?.let {
-                // verificacao simples para saber se eh um objeto vazio. melhorar isso depois.
-                if (it.id == -1L && it.releaseDate == "aaaa-mm-dd") {
-                    Toast.makeText(activity, "verifique sua conecção com a internet.", Toast.LENGTH_LONG).show()
-                }
-                else {
-                    intent.putExtra("film", film)
-                    intent.putExtra("favorite", false)
-                    // inicia activity com resquestCode = 2 -> abrir a partir da API
-                    startActivityForResult( intent, 2 )
-                }
+            // verificacao simples para saber se eh um objeto vazio. melhorar isso depois.
+            if (film.id == -1L) {
+                Toast.makeText(activity, "verifique sua conecção com a internet.", Toast.LENGTH_LONG).show()
+            }
+            else {
+                intent.putExtra("film", film)
+                intent.putExtra("favorite", false)
+                // inicia activity com resquestCode = 2 -> abrir a partir da API
+                startActivityForResult( intent, 2 )
             }
         }
     }
