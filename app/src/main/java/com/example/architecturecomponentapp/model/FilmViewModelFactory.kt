@@ -12,8 +12,10 @@ class FilmViewModelFactory (
 
     @Suppress("cast sem checagem")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FilmViewModel::class.java))
-            return FilmViewModel(databaseDao, application) as T
+        if (modelClass.isAssignableFrom(FilmApiViewModel::class.java))
+            return FilmApiViewModel(databaseDao, application) as T
+        else if (modelClass.isAssignableFrom(FilmDataViewModel::class.java))
+            return FilmDataViewModel(databaseDao, application) as T
         throw IllegalArgumentException("Classe ViewModel desconhecida")
     }
 
