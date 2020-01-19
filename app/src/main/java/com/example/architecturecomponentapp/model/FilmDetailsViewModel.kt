@@ -1,11 +1,13 @@
 package com.example.architecturecomponentapp.model
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.*
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
+import com.example.architecturecomponentapp.data.database.remote.FilmsApi
 import com.example.architecturecomponentapp.data.entity.FilmData
 
 class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, lifecycle: Lifecycle) :
@@ -23,9 +25,9 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
      *  ser inserido ou removido no database quando a activity estiver prestes a ser destruida.
      *  Levando isso em conta, o onResult dos fragments tornam-se denecessarios.
      */
-    private var _result: Int = 0
-    val result: Int get() = _result
-    fun setResult(r: Int) { _result = r }
+    private var _filmId: Long? = null
+    val filmId: Long? get() = _filmId
+    fun setId(i: Long) { _filmId = i }
 
     private var _isFavorite: Boolean? = null
     val isFavorite: Boolean? get() = _isFavorite
@@ -35,11 +37,42 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
     val film: FilmData? get() = _film
     fun setFilm(film: FilmData) {_film = film }
 
+    // dados do filme da API.
+    private var _requestFilm = MutableLiveData<FilmsJson.FilmJson>()
+    // adaptar resultado para FilmData
+    val responseFilmJson: LiveData<FilmsJson.FilmJson> get() = _requestFilm
+
     init {
         lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    // recupera apenas um unico filme da API, para exibir suas informacoes na activity de detalhes
+    fun requestFilmApiService (filmId: Long) {
+        uiCoroutineScope.launch {
+            //receber a chamada da API sem bloquear a thread princial
+            val getCallDeferred = FilmsApi.retrofitService.callFilmApi(filmId)
+            try {
+                val requestResult = getCallDeferred.await()
+                //atualizando valor do _requestFilm
+                _requestFilm.value = requestResult
+            }
+            catch (t: Throwable) {
+                Log.e("ERRO - FILM REQUEST", t.message!!)
+                _requestFilm.value = FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf())
+            }
+        }
+    }
+
+    // retornar film buscado pelo ID
+    fun getFilm (id: Long): FilmData {
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                databaseDao.get(id)
+            }
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onResultDetailsActivity () {
         val inDatabase = this.isFavoriteFilm(_film!!.id)
         // se estiver marcado como favorito e nao estiver no database
@@ -53,7 +86,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
     }
 
     // inserir film chamando função de suspensao
-    fun insertFilm(filmData: FilmData) {
+    private fun insertFilm(filmData: FilmData) {
         // inserir imediatamente, pois o app ou a tela de detalhes pode esta sendo destruida.
         runBlocking { insert(filmData) }
     }
@@ -64,7 +97,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
     }
 
     // deletar film chamando função de suspensao
-    fun deleteFilm(filmData: FilmData) {
+    private fun deleteFilm(filmData: FilmData) {
         // inserir imediatamente, pois o app ou a tela de detalhes pode esta sendo destruida.
         runBlocking { delete(filmData) }
     }
@@ -74,7 +107,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
     }
 
     // verificar se o filme esta no database
-    fun isFavoriteFilm (id: Long) : Boolean {
+    private fun isFavoriteFilm (id: Long) : Boolean {
         var result = false
         runBlocking {
             withContext(Dispatchers.IO) {
