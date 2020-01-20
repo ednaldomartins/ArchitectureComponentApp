@@ -8,14 +8,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
-import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.*
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class DataFilmListFragment:
-    BaseFilmListFragment(),
-    FilmListAdapter.OnFilmClickListener {
+class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickListener {
 
     /********************************************************
      *  variaveis herdadas de BaseFilmListFragment:         *
@@ -30,12 +27,14 @@ class DataFilmListFragment:
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe
         val view = super.onCreateView(inflater, container, savedInstanceState)
-
         filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(FilmDataViewModel::class.java)
+
+        //  Quando houver alteracao no database, a lista de apresentacao deve ser atualizada
         filmViewModel.filmsDataBase?.observe(this, Observer {
             filmViewModel.setPresentationDatabase(it)
         })
 
+        //  Quando a lista de apresentacao for atualizada, o recyclerview tambem deve ser atualizado
         filmViewModel.presentationFilmList?.observe(this, Observer {
             // configurando adapter do RecyclerView
             filmListAdapter = FilmListAdapter(
@@ -44,12 +43,10 @@ class DataFilmListFragment:
                 filmListData = it,
                 onFilmClickListener = this)
             mFilmRecyclerView.adapter = filmListAdapter
-
         })
 
         return view
     }
-
 
     override fun onRefresh() {
         filmViewModel.loadFilmDatabase()
@@ -57,6 +54,7 @@ class DataFilmListFragment:
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
+        //  se o texto da busca for limpo, entao deve recarregar a apresentacao a partir do database
         if (newText == "")
             filmViewModel.loadFilmDatabase()
 
@@ -70,21 +68,12 @@ class DataFilmListFragment:
         return true
     }
 
-    override fun onFilmClick(filmId: Long?, position: Int) {
-        val intent: Intent = Intent(activity, FilmDetailsActivity::class.java)
-        val film = filmViewModel.getFilm(filmId!!)
-        intent.putExtra("film", film)
+    override fun onFilmClick(filmId: Long?) {
+        val intent = Intent(activity, FilmDetailsActivity::class.java)
+        intent.putExtra("filmId", filmId)
         intent.putExtra("favorite", true)
         // inicia activity com resquestCode = 1 -> abrir a partir do DB
-        startActivityForResult( intent, 1 )
+        startActivity( intent )
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // resultCode = 2 -> o filme foi removido dos favoritos
-        if (requestCode == 1 && resultCode == 2) {
-            val film = data!!.extras?.getSerializable("film") as FilmData
-            filmViewModel.deleteFilm(film)
-        }
-    }
 }

@@ -11,16 +11,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.FilmApiViewModel
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
-import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 import com.example.architecturecomponentapp.util.FilmApiStatus
 
-class ApiFilmListFragment: BaseFilmListFragment(),
-    FilmListAdapter.OnFilmClickListener,
-    View.OnClickListener {
+class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickListener, View.OnClickListener {
 
     /********************************************************
      *  variaveis herdadas de BaseFilmListFragment:         *
@@ -40,10 +36,11 @@ class ApiFilmListFragment: BaseFilmListFragment(),
     private lateinit var filmViewModel: FilmApiViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // recuperar view da super classe
+        // recuperar view da super classe, e instanciar views adicionais desse fragment
         val view = super.onCreateView(inflater, container, savedInstanceState)
         filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(FilmApiViewModel::class.java)
         initViews(view!!)
+
         // chamar lista de filmes da api
         filmViewModel.requestFilmListApiService()
         connectionStatus()
@@ -171,48 +168,14 @@ class ApiFilmListFragment: BaseFilmListFragment(),
         }
     }
 
-    override fun onFilmClick(filmId: Long?, position: Int) {
+    override fun onFilmClick(filmId: Long?) {
         val intent = Intent(activity, FilmDetailsActivity::class.java)
         // verificar se esta nos favoritos do database do usuario
+        intent.putExtra("filmId", filmId)
+        //  isFavorite = true | false ?
         val isFavorite = filmViewModel.isFavoriteFilm(filmId!!)
-        if (isFavorite) {
-            val film = filmViewModel.getFilm(filmId)
-            intent.putExtra("film", film)
-            intent.putExtra("favorite", true)
-            // inicia activity com resquestCode = 1 -> abrir a partir do DB
-            startActivityForResult( intent, 1 )
-        }
-        else {
-            // localizar film na API usando o id
-            filmViewModel.requestFilmApiService(filmId)
-            // apos os dados serem recuperados da API instanciar film
-            var film = FilmData()
-            filmViewModel.responseFilmJson.value?.let { film = FilmAdapter.adaptJsonToData(it) }
-            // verificacao simples para saber se eh um objeto vazio. melhorar isso depois.
-            if (film.id == -1L) {
-                Toast.makeText(activity, "verifique sua conecção com a internet.", Toast.LENGTH_LONG).show()
-            }
-            else {
-                intent.putExtra("film", film)
-                intent.putExtra("favorite", false)
-                // inicia activity com resquestCode = 2 -> abrir a partir da API
-                startActivityForResult( intent, 2 )
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // resultCode = 1 -> o filme foi adicionado aos favoritos
-        if (requestCode == 2 && resultCode == 1) {
-            val film = data!!.extras?.getSerializable("film") as FilmData
-            filmViewModel.insertFilm(film)
-        }
-        // resultCode = 2 -> o filme foi removido dos favoritos
-        else if (requestCode == 1 && resultCode == 2) {
-            val film = data!!.extras?.getSerializable("film") as FilmData
-            filmViewModel.deleteFilm(film)
-        }
+        intent.putExtra("favorite", isFavorite)
+        startActivity( intent )
     }
 
 }
