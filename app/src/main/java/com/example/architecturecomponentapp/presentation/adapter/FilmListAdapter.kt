@@ -42,13 +42,15 @@ class FilmListAdapter (
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val film: FilmsJson.FilmJson = filmListJson[position]
         // guardar o ID para se caso o item seja clicado, sera feito uma requisicao a patir do ID.
-        holder.filmId = film.id
+        holder.filmId = film.id ?: -1
 
         // se tivermos um caminho de uma foto salva, entao...
-        if (film.posterPath != "") {
+        if (!film.posterPath.isNullOrEmpty()) {
             val imgUri = Uri.parse( Api.URL_IMAGE + film.posterPath )
             Glide.with(holder.filmPoster.context).load(imgUri).into(holder.filmPoster)
         }
+        else
+            holder.filmPoster.setImageDrawable(context?.getDrawable(R.drawable.ic_local_movies_24dp))
 
         // nome do filme. alterar para filmes com nome muito grande para nao passar de duas linhas
         if (film.title?.length ?: 0 > 35)
@@ -57,14 +59,17 @@ class FilmListAdapter (
             holder.filmTitle.text = film.title
 
         // alterar o formato da data para dd/mm/aaaa
-        val date = film.releaseDate
-        holder.filmReleaseDate.text =
-            ("${date?.subSequence(8,10)}/${date?.subSequence(5,7)}/${date?.subSequence(0,4)}")
+        val date = film.releaseDate ?: ""
+        if (date.length == 10) {
+            holder.filmReleaseDate.text =
+                ("${date.subSequence(8,10)}/${date.subSequence(5,7)}/${date.subSequence(0,4)}")
+        }
+        else holder.filmReleaseDate.text = "dd/mm/aaaa"
 
         // vizualizacoes do filme na API
-        holder.filmPopularity.text = film.popularity
+        holder.filmPopularity.text = film.popularity ?: "0"
         // media obtida pela API
-        holder.filmVoteAverage.text = film.voteAverage.toString()
+        holder.filmVoteAverage.text = film.voteAverage?.toString() ?: "0"
     }
 
     class MyViewHolder(v: View, var onFilmClickListener: OnFilmClickListener? = null) : RecyclerView.ViewHolder(v), View.OnClickListener {
@@ -80,11 +85,11 @@ class FilmListAdapter (
         }
 
         override fun onClick(v: View?) {
-            onFilmClickListener?.onFilmClick(filmId, adapterPosition)
+            onFilmClickListener?.onFilmClick(filmId)
         }
     }
 
     interface OnFilmClickListener {
-        fun onFilmClick(filmId: Long?, position: Int)
+        fun onFilmClick(filmId: Long?)
     }
 }
