@@ -10,7 +10,7 @@ import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.database.remote.FilmsApi
 import com.example.architecturecomponentapp.data.entity.FilmData
 
-class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, lifecycle: Lifecycle) :
+class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) :
     AndroidViewModel(app),
     LifecycleObserver
 {
@@ -37,14 +37,24 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
     val film: FilmData? get() = _film
     fun setFilm(film: FilmData) {_film = film }
 
+    /*
+     *  variavel para controlar o ciclo de vida da FilmDetailsActivity. sempre que a activity for
+     *  criada ou recriada ela deve setar os valores do seu lifecyle na variavel da viewodel, para
+     *  que a viewmodel possa ter controle sobre o ciclo de vida dela. Quando a activity for
+     *  destruída a viewmodel pode deixar de observar a lifecycle da activity e so sera adicionada
+     *  ao observer de uma nova activity construida, visto que cada activity tem seu ciclo de vida.
+     */
+    private var _lifecycle: Lifecycle? = null
+    val lifecycle: Lifecycle? get() = _lifecycle
+    fun setLifecycle(lf: Lifecycle) {
+        _lifecycle = lf
+        _lifecycle?.addObserver(this)
+    }
+
     // dados do filme da API.
     private var _requestFilm = MutableLiveData<FilmsJson.FilmJson>()
     // adaptar resultado para FilmData
     val responseFilmJson: LiveData<FilmsJson.FilmJson> get() = _requestFilm
-
-    init {
-        lifecycle.addObserver(this)
-    }
 
     // recupera apenas um unico filme da API, para exibir suas informacoes na activity de detalhes
     fun requestFilmApiService (filmId: Long) {
@@ -72,7 +82,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onResultDetailsActivity () {
         val inDatabase = this.isFavoriteFilm(_film!!.id)
         // se estiver marcado como favorito e nao estiver no database
@@ -81,8 +91,12 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application, 
         }
         // se nao estiver marcado como favorito e estiver no database
         else if (!_isFavorite!! && inDatabase) {
-            deleteFilm(_film!!)
+            //  pegar film diretamente do database para ter o mesmo objeto.
+            val deleteFilm = this.getFilm(_film!!.id)
+            deleteFilm(deleteFilm)
         }
+        //  remover observer.
+        _lifecycle?.removeObserver(this)
     }
 
     // inserir film chamando função de suspensao

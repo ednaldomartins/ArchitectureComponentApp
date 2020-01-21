@@ -5,9 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
+
 import kotlinx.android.synthetic.main.activity_film_details.*
+
+import com.bumptech.glide.Glide
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
@@ -15,28 +20,20 @@ import com.example.architecturecomponentapp.util.Api
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.model.FilmDetailsViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 
-class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
-
+class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, LifecycleOwner {
+    // view
     private lateinit var favoriteButton: Button
-
-    //private lateinit var film: FilmData
+    // data
     private lateinit var viewModel: FilmDetailsViewModel
-    //private var isFavorite: Boolean? = null
-    //private var resultCode = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_film_details)
-
+        //  iniciar view e viewmodel
         initViews()
         initViewModel()
-        setViewModel()
-
-        // recuperar filme clicado na ListView
-//        film = intent.extras?.getSerializable("film") as FilmData
-//        if (isFavorite == null)
-//            isFavorite = intent.getBooleanExtra("favorite", false)
 
         if (viewModel.isFavorite!!) {
             film_details_favorite.background = getDrawable(R.drawable.ic_star_favorite_32dp)
@@ -45,8 +42,23 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
         }
         else {
             film_details_favorite.background = getDrawable(R.drawable.ic_star_not_favorite_32dp)
-            // aplicar os dados recebido na activity de detalhes
-            submitDetails( viewModel.film!! )
+            // se for diferente de nulo entao a activity ja passou pelo estado OnStop e tem uma
+            // instancia de filme ja guarda na viewmodel. entao pode submeter diretamente
+            if (viewModel.film != null) {
+                submitDetails( viewModel.film!! )
+            }
+            else {
+                viewModel.responseFilmJson.observe(this, Observer {
+                    viewModel.setFilm ( FilmAdapter.adaptJsonToData(it) )
+                    //  se film.id == -1, entao nao foi possivel recuperar film da API
+                    if (viewModel.film!!.id == -1L) {
+                        //  recomendado: mostrar mensagem de status recuperada da API
+                        Toast.makeText( this, "Erro na comunicação com o serviço.", Toast.LENGTH_LONG).show()
+                    }
+                    // aplicar os dados recebido na activity de detalhes
+                    submitDetails( viewModel.film!! )
+                })
+            }
         }
     }
 
@@ -77,27 +89,40 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
         film_detail_budget.text = (resources.getString(R.string.detail_budget) + " " + filmData.budget + resources.getString(R.string.detail_dolar) )
         film_detail_revenue.text = (resources.getString(R.string.detail_revenue) + " " + filmData.revenue + resources.getString(R.string.detail_dolar) )
         film_detail_homepage.text = filmData.homepage
+        //  tornar botão favorito clicavel apenas quando o filme for buscado com sucesso
+        favoriteButton.isClickable = (viewModel.film!!.id != -1L)
+
     }
 
     private fun initViews() {
         favoriteButton = film_details_favorite
         favoriteButton.setOnClickListener(this)
+        favoriteButton.isClickable = false
     }
 
     private fun initViewModel() {
         // recuperar fonte de dados
         val application = requireNotNull(this).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
-        val filmViewModelFactory = FilmViewModelFactory(dataSource, application, this.lifecycle)
+        val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
         viewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmDetailsViewModel::class.java)
-    }
 
-    private fun setViewModel() {
-        if (viewModel.isFavorite == null) viewModel.setIsFavorite( intent.getBooleanExtra("favorite", false) )
+        // se film for nulo, vamos recuperar o film e setar os valores da intent
         if (viewModel.film == null) {
-            val film = intent.extras?.getSerializable("film") as FilmData
-            viewModel.setFilm( film )
+            viewModel.setIsFavorite( intent.getBooleanExtra("favorite", false) )
+            viewModel.setId( intent.getLongExtra("filmId", -1L) )
+            // se for favorito, recuperar do DB, senao da API
+            if (viewModel.isFavorite!!) {
+                viewModel.setFilm( viewModel.getFilm( viewModel.filmId!! ) )
+            }
+            else {
+                viewModel.requestFilmApiService( viewModel.filmId!! )
+            }
         }
+
+        //  enviar o lifecycle da nova activity construida/reconstruida
+        viewModel.setLifecycle(this.lifecycle)
+
     }
 
     override fun onClick(v: View?) {
@@ -106,16 +131,10 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener {
                 if ( !viewModel.isFavorite!! ) {
                     viewModel.setIsFavorite( true )
                     favoriteButton.background = getDrawable( R.drawable.ic_star_favorite_32dp )
-                    // 1 = inserir no DB
-                    viewModel.setResult( 1 )
-                    setResult(viewModel.result, intent.putExtra("film", viewModel.film))
                 }
                 else {
                     viewModel.setIsFavorite( false )
                     favoriteButton.background = getDrawable( R.drawable.ic_star_not_favorite_32dp )
-                    // 2 = remover do DB
-                    viewModel.setResult( 2 )
-                    setResult(viewModel.result, intent.putExtra("film", viewModel.film))
                 }
             }
         }
