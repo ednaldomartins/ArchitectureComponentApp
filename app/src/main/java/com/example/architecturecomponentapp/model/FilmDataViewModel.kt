@@ -4,12 +4,15 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+
+import kotlinx.coroutines.*
+
 import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.entity.FilmData
 import com.example.architecturecomponentapp.util.FilmApiStatus
-import kotlinx.coroutines.*
 
-class FilmDataViewModel (private val databaseDao: FilmDao, app: Application) : AndroidViewModel(app) {
+
+class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewModel(app) {
 
     // Coroutines
     private var viewModelJob = Job()
@@ -75,93 +78,6 @@ class FilmDataViewModel (private val databaseDao: FilmDao, app: Application) : A
                 presentationFilmList?.value = newList
             }
         }
-    }
-
-    // inserir filme chamando funcao de suspensao
-    fun insertFilm(
-        id: Long,
-        title: String,
-        releaseDate: String,
-        genresString: String,
-        homepage: String,
-        originalLanguage: String,
-        overview: String,
-        popularity: String,
-        posterPath: String,
-        status:String,
-        revenue: Long,
-        budget: Long,
-        runtime: Int,
-        voteAverage: Float,
-        companiesString: String)
-    {
-        uiCoroutineScope.launch {
-            insert( FilmData(
-                id = id,
-                title = title,
-                releaseDate = releaseDate,
-                genres = genresString,
-                homepage = homepage,
-                originalLanguage = originalLanguage,
-                overview = overview,
-                popularity = popularity,
-                posterPath = posterPath,
-                status = status,
-                revenue = revenue,
-                budget = budget,
-                runtime = runtime,
-                voteAverage = voteAverage,
-                productionCompanies = companiesString
-            ) )
-        }
-    }
-
-    // inserir film chamando função de suspensao
-    fun insertFilm(filmData: FilmData) {
-        uiCoroutineScope.launch {
-            insert(filmData)
-        }
-    }
-
-    //funcao de suspensao para inserir filmData no BD
-    private suspend fun insert (filmData: FilmData) {
-        withContext(Dispatchers.IO) { databaseDao.insertFilm(filmData) }
-    }
-
-    // deletar film chamando função de suspensao
-    fun deleteFilm(filmData: FilmData) {
-        uiCoroutineScope.launch {
-            delete(filmData)
-        }
-    }
-
-    private suspend fun delete(film: FilmData) {
-        withContext(Dispatchers.IO) { databaseDao.deleteFilm(film) }
-    }
-
-    // metodo para limpar o DB
-    fun clearDatabase () {
-        uiCoroutineScope.launch { withContext(Dispatchers.IO) { databaseDao.clear() } }
-    }
-
-    // retornar film buscado pelo ID
-    fun getFilm (id: Long): FilmData {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                databaseDao.get(id)
-            }
-        }
-    }
-
-    // verificar se o filme esta no database
-    fun isFavoriteFilm (id: Long) : Boolean {
-        var result = false
-        runBlocking {
-            withContext(Dispatchers.IO) {
-                result = databaseDao.getFavorite(id)
-            }
-        }
-        return result
     }
 
     override fun onCleared() {
