@@ -9,24 +9,17 @@ import kotlinx.coroutines.*
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.entity.FilmData
-import com.example.architecturecomponentapp.util.FilmApiStatus
-
 
 class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewModel(app) {
 
     // Coroutines
     private var viewModelJob = Job()
     private val uiCoroutineScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-    // connection status
-    private val _status = MutableLiveData<FilmApiStatus>()
-    // get() connection  status
-    val status: LiveData<FilmApiStatus> get() = _status
-
     /**
      *  filmsDatabase tem acesso a lista de filmes do database local.
      *  filmsDatabase deve ser usado para qualquer acesso a esse database local de filmes,
      *  por parte de qualquer fragments ou activities atraves do seu get().
-     *  mementoPresentationFilmList foi criado para manter uma copia do estado atual do
+     *  _mementoPresentationFilmList foi criado para manter uma copia do estado atual do
      *  database de filmes. O database local de filmes retona um LiveData da lista de filmes, que so pode
      *  pode ser acessado atraves do observador. sempre que o observador sinalizar uma modificacao
      *  nesse database, ele deve repassar o "it" referente a essa lista de filmes, para que o tanto
@@ -37,36 +30,40 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
      *  presentationFilmList deve apenas apresentar a lista de filmes do database na tela
      *  pelo ViewHolder, seja atraves do proprio "it" referente a lista de filmes database, ou
      *  pela newList criada atraves do filtro de pesquisa, que recebe essa newLista apos ser
-     *  realizado esse filtro nos filmes do database, atraves do mementoPresentationFilmList.
+     *  realizado esse filtro nos filmes do database, atraves do _mementoPresentationFilmList.
      */
-    // lista de filmes direto do database
+    //  lista de filmes direto do database
     private var _filmsDatabase: LiveData<List<FilmData>>? = databaseDao.filmList()
-    // get do database
+    //  get do database
     val filmsDataBase: LiveData<List<FilmData>>? get() = _filmsDatabase
-    // mantem o estado atual do database para fazer buscas baseado no database, e nao na lista de apresentacao
-    private var mementoPresentationFilmList: MutableLiveData<List<FilmData>>? = MutableLiveData()
-    // a lista de apresentacao pode ser modificada baseado na busca, o memento so se altera apos alteracao no database
+    //  mantem o estado atual do database para fazer buscas baseado no database, e nao na lista de apresentacao
+    private var _mementoPresentationFilmList: MutableLiveData<List<FilmData>>? = MutableLiveData()
+    //  a lista de apresentacao pode ser modificada baseado na busca, o memento so se altera apos alteracao no database
     var presentationFilmList: MutableLiveData<List<FilmData>>? = MutableLiveData()
 
+    //  pagina atual
+    private var _actualPage: Int = 1
+    val actualPage: Int get() = _actualPage
+    //  total de paginas
+    private var _totalPages: Int = 1
+    val totalPages: Int get() = _totalPages
 
-    fun loadFilmDatabase () {
-        presentationFilmList?.value = mementoPresentationFilmList?.value
+    companion object {
+        //  limite de view para viewholder
+        private const val PRESENTATION_LIST_SIZE: Int = 10
     }
 
-    // armazenar item presentes no database em lista multaveis para apresentacao de dados
-    fun setPresentationDatabase(it: List<FilmData>) {
-        uiCoroutineScope.launch {
-            // memento para backup do estado atual do database e presentation para viewholder
-            mementoPresentationFilmList?.postValue( it )
-            presentationFilmList?.postValue( it )
-        }
+    fun setPresentationDatabase () {
+        _actualPage = 1
+        _mementoPresentationFilmList?.value =  _filmsDatabase?.value
+        setPresentation()
     }
 
-    // buscar filmes no database local
+    //  buscar filmes no database local
     fun searchFilmDatabase (query: String) {
         uiCoroutineScope.launch {
             // o memento deve ser verificado para ver se esta nulo
-            mementoPresentationFilmList?.value?.let {
+            _filmsDatabase?.value?.let {
                 // caso nao esteja vazio, criaremos um vetor que ira criar uma nova lista de apresentacao
                 val newList: MutableList<FilmData>? = mutableListOf()
                 // se contem parte ou toda a palavra deve adicionar a nova lista
@@ -75,9 +72,34 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
                         newList?.add(it[i])
                     // lista de apresentacao recebe a nova lista que foi buscada
                 }
-                presentationFilmList?.value = newList
+                _mementoPresentationFilmList?.value = newList
+                setPresentation(page = 1)
             }
         }
+    }
+
+    fun setPresentation(page: Int = _actualPage) {
+        _actualPage = validatePage(page)
+        _mementoPresentationFilmList?.value?.let {
+            //  exemplo: se tiver 25 filmes na lista, entao teremos 2+1=3 paginas. 10 na primeira e segunda, e 5 na terceira.
+            _totalPages = ((it.size + 1)/(PRESENTATION_LIST_SIZE)) + 1
+            //  calcular tamanho da sub-lista (tamanho = ultimo item a ser exibido na pagina)
+            val sizeSubList: Int =
+                //  se nao for a ultima pagina, entao... exemplo: SIZE = 10 * _acutualPage = 2 = 20
+                if (_actualPage != totalPages) PRESENTATION_LIST_SIZE*_actualPage
+                //  sendo a ultima, entao... exemplo:
+                //  { (((_actualPage = 3)-1) * SIZE = 10 = 20) + (size = 25 % 10 = 5) } ==> 20 + 5 = 25
+                else (((_actualPage-1)*PRESENTATION_LIST_SIZE) + (it.size%PRESENTATION_LIST_SIZE))
+
+            //  setar sub-lista
+            presentationFilmList?.postValue( it.subList( (_actualPage-1)*PRESENTATION_LIST_SIZE, sizeSubList) )
+        }
+    }
+
+    private fun validatePage(page: Int) =  when {
+        (page < 1) -> 1
+        (page > _totalPages) -> totalPages
+        else -> page
     }
 
     override fun onCleared() {
