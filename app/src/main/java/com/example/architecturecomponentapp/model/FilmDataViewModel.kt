@@ -54,7 +54,6 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
     }
 
     fun setPresentationDatabase () {
-        _actualPage = 1
         _mementoPresentationFilmList?.value =  _filmsDatabase?.value
         setPresentation()
     }
@@ -82,15 +81,13 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
         _actualPage = validatePage(page)
         _mementoPresentationFilmList?.value?.let {
             //  exemplo: se tiver 25 filmes na lista, entao teremos 2+1=3 paginas. 10 na primeira e segunda, e 5 na terceira.
-            _totalPages = ((it.size + 1)/(PRESENTATION_LIST_SIZE)) + 1
+            _totalPages = ((it.size-1)/(PRESENTATION_LIST_SIZE)) + 1
             //  calcular tamanho da sub-lista (tamanho = ultimo item a ser exibido na pagina)
             val sizeSubList: Int =
                 //  se nao for a ultima pagina, entao... exemplo: SIZE = 10 * _acutualPage = 2 = 20
                 if (_actualPage != totalPages) PRESENTATION_LIST_SIZE*_actualPage
-                //  sendo a ultima, entao... exemplo:
-                //  { (((_actualPage = 3)-1) * SIZE = 10 = 20) + (size = 25 % 10 = 5) } ==> 20 + 5 = 25
-                else (((_actualPage-1)*PRESENTATION_LIST_SIZE) + (it.size%PRESENTATION_LIST_SIZE))
-
+                //  sendo a ultima, entao... ultimo = it.size:
+                else it.size
             //  setar sub-lista
             presentationFilmList?.postValue( it.subList( (_actualPage-1)*PRESENTATION_LIST_SIZE, sizeSubList) )
         }
