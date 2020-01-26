@@ -9,10 +9,10 @@ class FilmsJson (
     var movies: Array<FilmJson>? = null,
     // numero da pagina atual da lista de filmes
     @Json(name = "page")
-    var page: Long = 0,
+    var page: Int = 0,
     // total de paginas encontrados da lista de filmes
     @Json(name = "total_pages")
-    var totalPages: Long = 0
+    var totalPages: Int = 0
 )
 {
     class FilmJson (

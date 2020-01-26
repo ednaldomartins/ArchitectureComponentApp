@@ -33,11 +33,11 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     // get() connection  status
     val status: LiveData<FilmApiStatus> get() = _status
     // pagina atual
-    private var _actualPage: Long = 1
-    val actualPage: Long get() = _actualPage
+    private var _actualPage: Int = 1
+    val actualPage: Int get() = _actualPage
     // total de paginas
-    private var _totalPages: Long = 1
-    val totalPages: Long get() = _totalPages
+    private var _totalPages: Int = 1
+    val totalPages: Int get() = _totalPages
     // query da pagina da API
     private var _query: String = ""
     val query: String get() = _query
@@ -55,7 +55,7 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     }
 
     // recupera uma lista de filmes da API
-    fun requestFilmListApiService (page: Long = _actualPage) {
+    fun requestFilmListApiService (page: Int = _actualPage) {
         /*
         *   atualizar a query: caso o usuario tenha enviado uma, a query sera atualizada para a
         *   nova query requisitada. quando o usuario apenas cancela uma pesquisa, ou a consulta
@@ -69,7 +69,7 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     }
 
     // recuperar a lista de filmes mais populares da API
-    private fun requestPopularFilmList(page: Long) {
+    private fun requestPopularFilmList(page: Int) {
         //receber a chamada da API sem bloquear a thread princial
         uiCoroutineScope.launch {
             val getCallDeferred = FilmsApi.retrofitService.callPopularMovieListApi(page)
@@ -78,7 +78,7 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     }
 
     // recupera uma lista de filmes da API baseado na busca do usuario
-    private fun requestSearchedFilmList (page: Long = _actualPage) {
+    private fun requestSearchedFilmList (page: Int = _actualPage) {
         uiCoroutineScope.launch {
             //receber a chamada da API sem bloquear a thread princial
             val getCallDeferred = FilmsApi.retrofitService.callSearchMovieList(page, query)
@@ -99,9 +99,7 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
             _status.value = FilmApiStatus.DONE
 
             if (resultList.movies?.size == 0)
-                Toast.makeText(getApplication(), "A busca não retornou nenhum filme.",Toast.LENGTH_LONG).show()
-            else
-                Toast.makeText(getApplication(), "A busca retornou com sucesso.",Toast.LENGTH_LONG).show()
+                Toast.makeText(getApplication(), "A busca não encontrou filmes.",Toast.LENGTH_LONG).show()
 
         }
         catch(t: JsonDataException) {
@@ -119,7 +117,7 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     }
 
 
-    private fun validatePage(page: Long) =  when {
+    private fun validatePage(page: Int) =  when {
             (page < 1) -> 1
             (page > _totalPages) -> totalPages
             else -> page
@@ -128,6 +126,9 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     fun setSearch (query: String = "") {
         // se nao receber consulta, entao aplica consulta limpa.
         _query = query
+        //  resetar paginas a cada nova consulta
+        _actualPage = 1
+        _totalPages = 1
     }
 
     // verificar se o filme esta no database
