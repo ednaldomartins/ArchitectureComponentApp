@@ -25,12 +25,6 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
      *      filmViewModelFactory: FilmViewModelFactory      *
      *******************************************************/
 
-    private lateinit var mButtonFirstPage: Button
-    private lateinit var mButtonBeforePage: Button
-    private lateinit var mButtonNextPage: Button
-    private lateinit var mButtonLastPage: Button
-    private lateinit var mNumberPage: TextView
-
     private lateinit var filmViewModel: FilmDataViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,7 +40,7 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
 
         //  Quando a lista de apresentacao for atualizada, o recyclerview tambem deve ser atualizado
         filmViewModel.presentationFilmList?.observe(this, Observer {
-            refreshPageButton(filmViewModel.actualPage)
+            refreshPageButton(filmViewModel.actualPage, filmViewModel.totalPages)
             // configurando adapter do RecyclerView
             filmListAdapter = FilmListAdapter(
                 context = activity,
@@ -91,32 +85,6 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
         // esconder teclado
         mSearchView.clearFocus()
         return true
-    }
-
-    private fun refreshPageButton(actualPage: Int) {
-        // setando o numero atual da pagina na apresentacao
-        mNumberPage.text = actualPage.toString()
-        /** sempre que a requisicao muda, a pagina atual podera ser alterada, entao...*/
-        // se nao estiver visivel, entao tornar
-        if (mButtonFirstPage.visibility != View.VISIBLE) {
-            mButtonFirstPage.visibility = View.VISIBLE
-            mButtonBeforePage.visibility = View.VISIBLE
-        }
-        if (mButtonLastPage.visibility != View.VISIBLE) {
-            mButtonLastPage.visibility = View.VISIBLE
-            mButtonNextPage.visibility = View.VISIBLE
-        }
-        /* apos tornar os botoes visiveis, verificar: */
-        // se a página 1 for a atual, entao bloquear os botoes de voltar pagina
-        if (actualPage == 1) {
-            mButtonFirstPage.visibility = View.INVISIBLE
-            mButtonBeforePage.visibility = View.INVISIBLE
-        }
-        // se a ultima pagina for a atual, entao bloquear os botoes de avancar pagina
-        if (actualPage == filmViewModel.totalPages) {
-            mButtonLastPage.visibility = View.INVISIBLE
-            mButtonNextPage.visibility = View.INVISIBLE
-        }
     }
 
     override fun onClick(v: View?) {
