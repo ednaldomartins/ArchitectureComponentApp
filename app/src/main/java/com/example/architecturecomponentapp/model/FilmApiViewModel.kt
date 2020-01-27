@@ -3,7 +3,6 @@ package com.example.architecturecomponentapp.model
 import android.app.Application
 import android.util.Log.e
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -14,7 +13,7 @@ import com.example.architecturecomponentapp.data.database.remote.FilmsApi
 import com.example.architecturecomponentapp.util.FilmApiStatus
 import com.squareup.moshi.JsonDataException
 
-class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : AndroidViewModel (app) {
+class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : FilmListViewModel (app) {
 
     // Coroutines
     private var viewModelJob = Job()
@@ -32,12 +31,6 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
     private val _status = MutableLiveData<FilmApiStatus>()
     // get() connection  status
     val status: LiveData<FilmApiStatus> get() = _status
-    // pagina atual
-    private var _actualPage: Int = 1
-    val actualPage: Int get() = _actualPage
-    // total de paginas
-    private var _totalPages: Int = 1
-    val totalPages: Int get() = _totalPages
     // query da pagina da API
     private var _query: String = ""
     val query: String get() = _query
@@ -54,14 +47,14 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
         }
     }
 
-    // recupera uma lista de filmes da API
-    fun requestFilmListApiService (page: Int = _actualPage) {
+    //  configura a pagina e chama a funcao que realiza a busca da pagina de filmes na API
+    override fun setPresentation (page: Int) {
         /*
         *   atualizar a query: caso o usuario tenha enviado uma, a query sera atualizada para a
         *   nova query requisitada. quando o usuario apenas cancela uma pesquisa, ou a consulta
-        *   vem da pagina inicial, o query = ""
+        *   vem da pagina de destaques, o query = ""
         */
-        val newPage = validatePage(page)
+        val newPage = super.validatePage(page)
         if (_query == "")
             requestPopularFilmList(newPage)
         else
@@ -86,6 +79,7 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
         }
     }
 
+    //  recupera uma lista de filmes da API
     private suspend fun setRequestResult(callDeferred: Deferred<FilmsJson>) {
         try {
             _status.value = FilmApiStatus.LOADING
@@ -98,8 +92,13 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
             // normalizar status da requisicao
             _status.value = FilmApiStatus.DONE
 
-            if (resultList.movies?.size == 0)
+            //  erro na busca dos filmes, resetar para ir a pagina de destaques
+            if (resultList.movies?.size == 0) {
                 Toast.makeText(getApplication(), "A busca não encontrou filmes.",Toast.LENGTH_LONG).show()
+                //  busca limpa = destaques
+                setSearch()
+                setPresentation()
+            }
 
         }
         catch(t: JsonDataException) {
@@ -110,19 +109,13 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : An
         }
         catch (t: Throwable) {
             e("ERRO - search REQUEST", t.message!!)
-            Toast.makeText(getApplication(), "ERRO: não foi possível buscar por filme pesquisado.",Toast.LENGTH_LONG).show()
+            Toast.makeText(getApplication(), "ERRO: não foi possível buscar por filmes.",Toast.LENGTH_LONG).show()
             _status.value = FilmApiStatus.ERRO
             _requestFilmList.value = FilmsJson( emptyArray( ) )
         }
     }
 
-
-    private fun validatePage(page: Int) =  when {
-            (page < 1) -> 1
-            (page > _totalPages) -> totalPages
-            else -> page
-    }
-
+    //  uma nova consulta e realizada
     fun setSearch (query: String = "") {
         // se nao receber consulta, entao aplica consulta limpa.
         _query = query

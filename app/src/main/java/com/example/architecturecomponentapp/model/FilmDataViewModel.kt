@@ -1,7 +1,6 @@
 package com.example.architecturecomponentapp.model
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -10,7 +9,7 @@ import kotlinx.coroutines.*
 import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.entity.FilmData
 
-class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewModel(app) {
+class FilmDataViewModel (databaseDao: FilmDao, app: Application) : FilmListViewModel(app) {
 
     // Coroutines
     private var viewModelJob = Job()
@@ -41,13 +40,6 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
     //  a lista de apresentacao pode ser modificada baseado na busca, o memento so se altera apos alteracao no database
     var presentationFilmList: MutableLiveData<List<FilmData>>? = MutableLiveData()
 
-    //  pagina atual
-    private var _actualPage: Int = 1
-    val actualPage: Int get() = _actualPage
-    //  total de paginas
-    private var _totalPages: Int = 1
-    val totalPages: Int get() = _totalPages
-
     companion object {
         //  limite de view para viewholder
         private const val PRESENTATION_LIST_SIZE: Int = 10
@@ -77,8 +69,8 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
         }
     }
 
-    fun setPresentation(page: Int = _actualPage) {
-        _actualPage = validatePage(page)
+    override fun setPresentation(page: Int) {
+        _actualPage = super.validatePage(page)
         _mementoPresentationFilmList?.value?.let {
             //  exemplo: se tiver 25 filmes na lista, entao teremos 2+1=3 paginas. 10 na primeira e segunda, e 5 na terceira.
             _totalPages = ((it.size-1)/(PRESENTATION_LIST_SIZE)) + 1
@@ -91,12 +83,6 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : AndroidViewMo
             //  setar sub-lista
             presentationFilmList?.postValue( it.subList( (_actualPage-1)*PRESENTATION_LIST_SIZE, sizeSubList) )
         }
-    }
-
-    private fun validatePage(page: Int) =  when {
-        (page < 1) -> 1
-        (page > _totalPages) -> totalPages
-        else -> page
     }
 
     override fun onCleared() {
