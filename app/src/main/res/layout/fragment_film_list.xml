@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/film_list_api_layout"
+        android:id="@+id/film_list_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -15,7 +15,7 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/film_list_api_recycle_view"
+                android:id="@+id/film_list_recycle_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:scrollbars="vertical"
@@ -25,7 +25,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/film_list_api_status"
+            android:id="@+id/film_list_status"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toTopOf="parent"
@@ -44,7 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
             <Button
-                    android:id="@+id/film_list_api_button_first_page"
+                    android:id="@+id/film_list_button_first_page"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -56,7 +56,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                    android:id="@+id/film_list_api_button_before_page"
+                    android:id="@+id/film_list_button_before_page"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -64,12 +64,12 @@
                     android:gravity="center_horizontal"
                     android:scaleX="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/film_list_api_button_first_page"
+                    app:layout_constraintStart_toEndOf="@+id/film_list_button_first_page"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                    android:id="@+id/film_list_api_number_page"
+                    android:id="@+id/film_list_number_page"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -78,12 +78,12 @@
                     android:textColor="@color/colorPrimaryText"
                     android:textSize="@dimen/title_size"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/film_list_api_button_next_page"
-                    app:layout_constraintStart_toEndOf="@+id/film_list_api_button_before_page"
+                    app:layout_constraintEnd_toStartOf="@+id/film_list_button_next_page"
+                    app:layout_constraintStart_toEndOf="@+id/film_list_button_before_page"
                     app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                    android:id="@+id/film_list_api_button_next_page"
+                    android:id="@+id/film_list_button_next_page"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -91,12 +91,12 @@
                     android:gravity="center_horizontal"
                     android:scaleX="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/film_list_api_button_last_page"
+                    app:layout_constraintEnd_toStartOf="@+id/film_list_button_last_page"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
             <Button
-                    android:id="@+id/film_list_api_button_last_page"
+                    android:id="@+id/film_list_button_last_page"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
