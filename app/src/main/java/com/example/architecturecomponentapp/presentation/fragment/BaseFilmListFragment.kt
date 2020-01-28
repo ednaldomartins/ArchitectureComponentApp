@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
+import com.example.architecturecomponentapp.model.FilmListViewModel
 import com.example.architecturecomponentapp.model.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
@@ -21,33 +22,33 @@ import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 open class BaseFilmListFragment :
     Fragment(),
     SwipeRefreshLayout.OnRefreshListener,
-    SearchView.OnQueryTextListener {
+    SearchView.OnQueryTextListener, View.OnClickListener {
 
+    //  view layout
     protected lateinit var mFilmRecyclerView: RecyclerView
-    protected lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     protected lateinit var mSearchView: SearchView
-
-    protected lateinit var mButtonFirstPage: Button
-    protected lateinit var mButtonBeforePage: Button
-    protected lateinit var mButtonNextPage: Button
-    protected lateinit var mButtonLastPage: Button
-    protected lateinit var mNumberPage: TextView
-
-    //protected lateinit var filmViewModel: FilmApiViewModel
+    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
+    //  view page
+    private lateinit var mButtonFirstPage: Button
+    private lateinit var mButtonBeforePage: Button
+    private lateinit var mButtonNextPage: Button
+    private lateinit var mButtonLastPage: Button
+    private lateinit var mNumberPage: TextView
+    //  data
     protected lateinit var filmViewModelFactory: FilmViewModelFactory
     protected lateinit var filmListAdapter: FilmListAdapter
+    private lateinit var viewModel: FilmListViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate o layout desse fragment
-        val view = inflater.inflate(R.layout.fragment_api_film_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_film_list, container, false)
         initViews(view)
         setHasOptionsMenu(true)
 
-        // recuperar fonte de dados
+        //  criar frabrica de ViewModels
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
         filmViewModelFactory = FilmViewModelFactory(dataSource, application)
-        //filmViewModel = ViewModelProviders.of(activity!!, filmViewModelFactory).get(FilmApiViewModel::class.java)
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
@@ -57,16 +58,35 @@ open class BaseFilmListFragment :
         return view
     }
 
-    private fun initViews(v: View) {
-        mFilmRecyclerView = v.findViewById(R.id.film_list_api_recycle_view)
-        mSwipeRefreshLayout = v.findViewById(R.id.film_list_api_layout)
-        mSwipeRefreshLayout.setOnRefreshListener(this)
+    //  pegar referencia da viewmodel da classe filha para poder controlar os botoes de navegacao de pagina
+    protected fun setViewModel (vm: FilmListViewModel) {
+        this.viewModel = vm
     }
 
+    //  views basicas para o funcionamento da lista de filmes
+    private fun initViews(v: View) {
+        mFilmRecyclerView = v.findViewById(R.id.film_list_recycle_view)
+        mSwipeRefreshLayout = v.findViewById(R.id.film_list_layout)
+        mSwipeRefreshLayout.setOnRefreshListener(this)
+        // inicializacao dos botoes de navegacao de paginas
+        mButtonFirstPage = v.findViewById(R.id.film_list_button_first_page)
+        mButtonFirstPage.setOnClickListener(this)
+        mButtonBeforePage = v.findViewById(R.id.film_list_button_before_page)
+        mButtonBeforePage.setOnClickListener(this)
+        mButtonNextPage = v.findViewById(R.id.film_list_button_next_page)
+        mButtonNextPage.setOnClickListener(this)
+        mButtonLastPage = v.findViewById(R.id.film_list_button_last_page)
+        mButtonLastPage.setOnClickListener(this)
+        // localizando o textview do numero da pagina atual
+        mNumberPage = v.findViewById(R.id.film_list_number_page)
+    }
+
+    //  parar o refresh
     override fun onRefresh() {
         mSwipeRefreshLayout.isRefreshing = false
     }
 
+    //  criacao do menu pelo fragment
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_main, menu)
         val mMenuSearchItem: MenuItem? = menu?.findItem(R.id.search_menu)
@@ -75,10 +95,11 @@ open class BaseFilmListFragment :
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    //  configuracao dos botoes de controle de pagina
     protected fun refreshPageButton(actualPage: Int, totalPages: Int) {
         // setando o numero atual da pagina na apresentacao
         mNumberPage.text = actualPage.toString()
-        /** sempre que a requisicao muda, a pagina atual podera ser alterada, entao...*/
+        /* sempre que a requisicao muda, a pagina atual podera ser alterada, entao...*/
         // se nao estiver visivel, entao tornar
         if (mButtonFirstPage.visibility != View.VISIBLE) {
             mButtonFirstPage.visibility = View.VISIBLE
@@ -99,6 +120,29 @@ open class BaseFilmListFragment :
         if (actualPage == totalPages || totalPages == 0) {
             mButtonLastPage.visibility = View.INVISIBLE
             mButtonNextPage.visibility = View.INVISIBLE
+        }
+    }
+
+    /**
+     * funcao para controlar o click nos botoes da barra inferior de navegacao de paginas.
+     * Sendo possivel ate o momento passar, voltar, ir para a primeira, e ir para ultima pagina.
+     */
+    override fun onClick(v: View?) {
+        v?.let{
+            when(it.id) {
+                R.id.film_list_button_first_page -> {
+                    viewModel.setPresentation(1)
+                }
+                R.id.film_list_button_before_page -> {
+                    viewModel.setPresentation( viewModel.actualPage - 1 )
+                }
+                R.id.film_list_button_next_page -> {
+                    viewModel.setPresentation( viewModel.actualPage + 1 )
+                }
+                R.id.film_list_button_last_page -> {
+                    viewModel.setPresentation( viewModel.totalPages )
+                }
+            }
         }
     }
 
