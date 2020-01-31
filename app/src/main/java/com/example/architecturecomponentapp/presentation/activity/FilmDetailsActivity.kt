@@ -1,10 +1,14 @@
 package com.example.architecturecomponentapp.presentation.activity
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -25,6 +29,7 @@ import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, LifecycleOwner {
     // view
     private lateinit var favoriteButton: Button
+    private lateinit var homepageText: TextView
     // data
     private lateinit var viewModel: FilmDetailsViewModel
 
@@ -98,6 +103,8 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
         favoriteButton = film_details_favorite
         favoriteButton.setOnClickListener(this)
         favoriteButton.isClickable = false
+        homepageText = film_detail_homepage
+        homepageText.setOnClickListener(this)
     }
 
     private fun initViewModel() {
@@ -127,14 +134,26 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
 
     override fun onClick(v: View?) {
         v?.let {
-            if (v.id == favoriteButton.id) {
-                if ( !viewModel.isFavorite!! ) {
-                    viewModel.setIsFavorite( true )
-                    favoriteButton.background = getDrawable( R.drawable.ic_star_favorite_32dp )
+            when {
+                v.id == favoriteButton.id -> {
+                    if (!viewModel.isFavorite!!) {
+                        viewModel.setIsFavorite(true)
+                        favoriteButton.background = getDrawable(R.drawable.ic_star_favorite_32dp)
+                    } else {
+                        viewModel.setIsFavorite(false)
+                        favoriteButton.background =
+                            getDrawable(R.drawable.ic_star_not_favorite_32dp)
+                    }
                 }
-                else {
-                    viewModel.setIsFavorite( false )
-                    favoriteButton.background = getDrawable( R.drawable.ic_star_not_favorite_32dp )
+                v.id == homepageText.id -> {
+                    //  criar intent
+                    val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse( homepageText.text.toString() ))
+                    //  verificar se ha activities que possam responder a intent
+                    val activities: List<ResolveInfo> =
+                        packageManager.queryIntentActivities(webIntent, PackageManager.MATCH_DEFAULT_ONLY)
+                    //  chamar activity se houver disponivel
+                    if (activities.isNotEmpty())
+                        startActivity(webIntent)
                 }
             }
         }
