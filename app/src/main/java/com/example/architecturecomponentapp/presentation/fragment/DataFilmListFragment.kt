@@ -58,7 +58,9 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
 
     //  se o texto da busca for limpo, entao deve recarregar a apresentacao a partir do database
     override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText == "")
+        if (newText != "")
+            filmViewModel.searchFilmDatabase(newText!!)
+        else
             filmViewModel.setPresentationDatabase()
 
         return true
@@ -66,7 +68,6 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
 
     //  enviar query pesquisava pelo usuario para buscar por filme no database que contenha a ela
     override fun onQueryTextSubmit(query: String?): Boolean {
-        filmViewModel.searchFilmDatabase(query!!)
         // esconder teclado
         mSearchView.clearFocus()
         return true
