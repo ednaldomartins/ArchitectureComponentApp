@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -55,11 +54,6 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
             else {
                 viewModel.responseFilmJson.observe(this, Observer {
                     viewModel.setFilm ( FilmAdapter.adaptJsonToData(it) )
-                    //  se film.id == -1, entao nao foi possivel recuperar film da API
-                    if (viewModel.film!!.id == -1L) {
-                        //  recomendado: mostrar mensagem de status recuperada da API
-                        Toast.makeText( this, "Erro na comunicação com o serviço.", Toast.LENGTH_LONG).show()
-                    }
                     // aplicar os dados recebido na activity de detalhes
                     submitDetails( viewModel.film!! )
                 })
