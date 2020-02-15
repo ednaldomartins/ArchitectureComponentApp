@@ -2,6 +2,7 @@ package com.example.architecturecomponentapp.model
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
 
 import kotlinx.coroutines.*
@@ -51,6 +52,12 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) 
         _lifecycle?.addObserver(this)
     }
 
+    private var countRequest = 0
+    companion object {
+        private const val MAX_REQUEST: Int = 5
+        private const val DELAY_REQUEST: Long = 5000
+    }
+
     // dados do filme da API.
     private var _requestFilm = MutableLiveData<FilmsJson.FilmJson>()
     // adaptar resultado para FilmData
@@ -65,10 +72,17 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) 
                 val requestResult = getCallDeferred.await()
                 //atualizando valor do _requestFilm
                 _requestFilm.value = requestResult
-            }
-            catch (t: Throwable) {
-                Log.e("ERRO - FILM REQUEST", t.message!!)
-                _requestFilm.value = FilmsJson.FilmJson(genres = arrayOf(), productionCompanies = arrayOf())
+            } catch (t: Throwable) {
+                //  se nao atingiu o limite de tentativas...
+                if (countRequest++ < MAX_REQUEST) {
+                    Log.e("ERRO - FILM REQUEST", t.message!!)
+                    Toast.makeText( getApplication(), "Erro na comunicação com o serviço ($countRequest).", Toast.LENGTH_SHORT).show()
+                    //  esperar 5 segundos ate a proxima tentativa
+                    delay(DELAY_REQUEST)
+                    requestFilmApiService(filmId)
+                }
+                else
+                    Toast.makeText( getApplication(), "Limite de tentativas excedido.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -84,17 +98,21 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) 
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onResultDetailsActivity () {
-        val inDatabase = this.isFavoriteFilm(_film!!.id)
-        // se estiver marcado como favorito e nao estiver no database
-        if ( _isFavorite!! && !inDatabase ) {
-            insertFilm(_film!!)
+        //  O filme pode nao ter sido recuperado da API e ainda ser null
+        _film?.let {
+            val inDatabase = this.isFavoriteFilm(it.id)
+            // se estiver marcado como favorito e nao estiver no database
+            if ( _isFavorite!! && !inDatabase ) {
+                insertFilm(it)
+            }
+            // se nao estiver marcado como favorito e estiver no database
+            else if (!_isFavorite!! && inDatabase) {
+                //  pegar film diretamente do database para ter o mesmo objeto.
+                val deleteFilm = this.getFilm(it.id)
+                deleteFilm(deleteFilm)
+            }
         }
-        // se nao estiver marcado como favorito e estiver no database
-        else if (!_isFavorite!! && inDatabase) {
-            //  pegar film diretamente do database para ter o mesmo objeto.
-            val deleteFilm = this.getFilm(_film!!.id)
-            deleteFilm(deleteFilm)
-        }
+
         //  remover observer.
         _lifecycle?.removeObserver(this)
     }
