@@ -2,6 +2,7 @@
 <resources>
     <dimen name="title_size">20sp</dimen>
     <dimen name="text_size">14sp</dimen>
+    <dimen name="average_size">32dp</dimen>
     <dimen name="text_secondary_details_size">16sp</dimen>
     <dimen name="text_primary_details_size">18sp</dimen>
     <dimen name="poster_width">90dp</dimen>

@@ -109,7 +109,7 @@
                     android:layout_marginBottom="16dp"
                     android:text="@string/detail_average"
                     android:textColor="@color/colorPrimaryBright"
-                    android:textSize="30sp"
+                    android:textSize="@dimen/average_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
