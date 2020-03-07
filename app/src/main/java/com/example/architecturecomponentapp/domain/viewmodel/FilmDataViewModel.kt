@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
-import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.domain.entity.FilmData
 
 class FilmDataViewModel (databaseDao: FilmDao, app: Application) : FilmListViewModel(app) {
 
@@ -77,11 +77,11 @@ class FilmDataViewModel (databaseDao: FilmDao, app: Application) : FilmListViewM
             //  calcular tamanho da sub-lista (tamanho = ultimo item a ser exibido na pagina)
             val sizeSubList: Int =
                 //  se nao for a ultima pagina, entao... exemplo: SIZE = 10 * _acutualPage = 2 = 20
-                if (_actualPage != totalPages) PRESENTATION_LIST_SIZE*_actualPage
+                if (_actualPage != totalPages) PRESENTATION_LIST_SIZE *_actualPage
                 //  sendo a ultima, entao... ultimo = it.size:
                 else it.size
             //  setar sub-lista
-            presentationFilmList?.postValue( it.subList( (_actualPage-1)*PRESENTATION_LIST_SIZE, sizeSubList) )
+            presentationFilmList?.postValue( it.subList( (_actualPage-1)* PRESENTATION_LIST_SIZE, sizeSubList) )
         }
     }
 

@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.architecturecomponentapp.R
-import com.example.architecturecomponentapp.model.FilmApiViewModel
+import com.example.architecturecomponentapp.domain.viewmodel.FilmApiViewModel
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 import com.example.architecturecomponentapp.util.FilmApiStatus
@@ -33,7 +33,8 @@ class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickLi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe, e instanciar views adicionais desse fragment
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(FilmApiViewModel::class.java)
+        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(
+            FilmApiViewModel::class.java)
         initViews(view!!)
         super.setViewModel(filmViewModel)
 

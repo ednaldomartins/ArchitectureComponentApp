@@ -1,5 +1,6 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.entity
 
+import com.example.architecturecomponentapp.domain.abstractions.Film
 import com.squareup.moshi.Json
 import java.io.Serializable
 

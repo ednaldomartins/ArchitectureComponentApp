@@ -5,7 +5,7 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 
-import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.domain.entity.FilmData
 
 @Dao
 interface FilmDao {

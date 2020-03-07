@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
-import com.example.architecturecomponentapp.model.*
+import com.example.architecturecomponentapp.domain.entity.FilmsJson
+import com.example.architecturecomponentapp.domain.viewmodel.FilmDataViewModel
 import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
@@ -27,7 +28,8 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(FilmDataViewModel::class.java)
+        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(
+            FilmDataViewModel::class.java)
         super.setViewModel(filmViewModel)
 
         //  Quando houver alteracao no database, a lista de apresentacao deve ser atualizada

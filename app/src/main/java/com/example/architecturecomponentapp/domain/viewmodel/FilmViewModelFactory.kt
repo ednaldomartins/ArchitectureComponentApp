@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -14,11 +14,20 @@ class FilmViewModelFactory (
     @Suppress("cast sem checagem")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FilmApiViewModel::class.java))
-            return FilmApiViewModel(databaseDao, application) as T
+            return FilmApiViewModel(
+                databaseDao,
+                application
+            ) as T
         else if (modelClass.isAssignableFrom(FilmDataViewModel::class.java))
-            return FilmDataViewModel(databaseDao, application) as T
+            return FilmDataViewModel(
+                databaseDao,
+                application
+            ) as T
         else if (modelClass.isAssignableFrom(FilmDetailsViewModel::class.java))
-            return FilmDetailsViewModel(databaseDao, application) as T
+            return FilmDetailsViewModel(
+                databaseDao,
+                application
+            ) as T
         throw IllegalArgumentException("Classe ViewModel desconhecida")
     }
 

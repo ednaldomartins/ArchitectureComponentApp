@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.data.entity
+package com.example.architecturecomponentapp.domain.entity
 
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 import java.io.Serializable
 
-import com.example.architecturecomponentapp.model.Film
+import com.example.architecturecomponentapp.domain.abstractions.Film
 
 @Entity (tableName = "film_table")
 data class FilmData (

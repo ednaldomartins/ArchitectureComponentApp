@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.entity
 
 import com.squareup.moshi.Json
 

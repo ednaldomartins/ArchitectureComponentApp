@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
-import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.domain.entity.FilmData
 
 @Database (entities = [FilmData::class], version = 5, exportSchema = false)
 abstract class FilmDatabase: RoomDatabase() {

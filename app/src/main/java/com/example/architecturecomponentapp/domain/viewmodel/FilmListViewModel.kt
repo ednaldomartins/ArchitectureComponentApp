@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

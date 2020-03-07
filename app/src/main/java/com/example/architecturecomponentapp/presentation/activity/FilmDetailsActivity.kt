@@ -20,9 +20,9 @@ import com.bumptech.glide.Glide
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.util.Api
-import com.example.architecturecomponentapp.data.entity.FilmData
-import com.example.architecturecomponentapp.model.FilmDetailsViewModel
-import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.domain.entity.FilmData
+import com.example.architecturecomponentapp.domain.viewmodel.FilmDetailsViewModel
+import com.example.architecturecomponentapp.domain.viewmodel.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.adapter.FilmAdapter
 
 class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, LifecycleOwner {
@@ -105,7 +105,11 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
         // recuperar fonte de dados
         val application = requireNotNull(this).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
-        val filmViewModelFactory = FilmViewModelFactory(dataSource, application)
+        val filmViewModelFactory =
+            FilmViewModelFactory(
+                dataSource,
+                application
+            )
         viewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmDetailsViewModel::class.java)
 
         // se film for nulo, vamos recuperar o film e setar os valores da intent

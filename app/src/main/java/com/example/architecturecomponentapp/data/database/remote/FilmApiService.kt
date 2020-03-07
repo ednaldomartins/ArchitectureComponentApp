@@ -1,7 +1,7 @@
 package com.example.architecturecomponentapp.data.database.remote
 
-import com.example.architecturecomponentapp.model.FilmsJson
-import com.example.architecturecomponentapp.model.Genres
+import com.example.architecturecomponentapp.domain.entity.FilmsJson
+import com.example.architecturecomponentapp.domain.entity.Genres
 import com.example.architecturecomponentapp.util.Api
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi

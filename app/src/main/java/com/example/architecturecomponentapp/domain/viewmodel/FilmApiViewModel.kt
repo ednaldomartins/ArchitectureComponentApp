@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.viewmodel
 
 import android.app.Application
 import android.util.Log.e
@@ -10,10 +10,12 @@ import kotlinx.coroutines.*
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.database.remote.FilmsApi
+import com.example.architecturecomponentapp.domain.entity.FilmsJson
+import com.example.architecturecomponentapp.domain.entity.Genres
 import com.example.architecturecomponentapp.util.FilmApiStatus
 import com.squareup.moshi.JsonDataException
 
-class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : FilmListViewModel (app) {
+class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : FilmListViewModel(app) {
 
     // Coroutines
     private var viewModelJob = Job()
@@ -105,13 +107,19 @@ class FilmApiViewModel (private val databaseDao: FilmDao, app: Application) : Fi
             e("ERRO - search REQUEST", t.message!!)
             Toast.makeText(getApplication(), "ERRO: problema com os dados dos filmes recuperados.",Toast.LENGTH_LONG).show()
             _status.value = FilmApiStatus.ERRO
-            _requestFilmList.value = FilmsJson( emptyArray( ) )
+            _requestFilmList.value =
+                FilmsJson(
+                    emptyArray()
+                )
         }
         catch (t: Throwable) {
             e("ERRO - search REQUEST", t.message!!)
             Toast.makeText(getApplication(), "ERRO: não foi possível buscar por filmes.",Toast.LENGTH_LONG).show()
             _status.value = FilmApiStatus.ERRO
-            _requestFilmList.value = FilmsJson( emptyArray( ) )
+            _requestFilmList.value =
+                FilmsJson(
+                    emptyArray()
+                )
         }
     }
 

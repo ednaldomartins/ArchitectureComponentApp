@@ -1,4 +1,4 @@
-package com.example.architecturecomponentapp.model
+package com.example.architecturecomponentapp.domain.viewmodel
 
 import android.app.Application
 import android.util.Log
@@ -9,7 +9,8 @@ import kotlinx.coroutines.*
 
 import com.example.architecturecomponentapp.data.dao.FilmDao
 import com.example.architecturecomponentapp.data.database.remote.FilmsApi
-import com.example.architecturecomponentapp.data.entity.FilmData
+import com.example.architecturecomponentapp.domain.entity.FilmsJson
+import com.example.architecturecomponentapp.domain.entity.FilmData
 
 class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) :
     AndroidViewModel(app),

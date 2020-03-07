@@ -1,13 +1,13 @@
 package com.example.architecturecomponentapp.presentation.adapter
 
-import com.example.architecturecomponentapp.data.entity.FilmData
-import com.example.architecturecomponentapp.model.FilmsJson
-import com.example.architecturecomponentapp.model.Genres
-import com.example.architecturecomponentapp.model.ProductionCompanies
+import com.example.architecturecomponentapp.domain.entity.FilmData
+import com.example.architecturecomponentapp.domain.entity.FilmsJson
+import com.example.architecturecomponentapp.domain.entity.Genres
+import com.example.architecturecomponentapp.domain.entity.ProductionCompanies
 
 class FilmAdapter {
     companion object {
-        fun adaptJsonToData (filmJson: FilmsJson.FilmJson) : FilmData{
+        fun adaptJsonToData (filmJson: FilmsJson.FilmJson) : FilmData {
             // converter array de genres para string
             val genres = filmJson.genres
             val genresString = convertGenreArrayToString(genres)

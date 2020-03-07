@@ -12,8 +12,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
-import com.example.architecturecomponentapp.model.FilmListViewModel
-import com.example.architecturecomponentapp.model.FilmViewModelFactory
+import com.example.architecturecomponentapp.domain.viewmodel.FilmListViewModel
+import com.example.architecturecomponentapp.domain.viewmodel.FilmViewModelFactory
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 /**
@@ -48,7 +48,11 @@ open class BaseFilmListFragment :
         //  criar frabrica de ViewModels
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
-        filmViewModelFactory = FilmViewModelFactory(dataSource, application)
+        filmViewModelFactory =
+            FilmViewModelFactory(
+                dataSource,
+                application
+            )
 
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
