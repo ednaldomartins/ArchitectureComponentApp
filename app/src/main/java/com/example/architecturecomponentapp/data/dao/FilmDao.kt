@@ -51,4 +51,7 @@ interface FilmDao {
     // listar todos os filmes por ordem de identificacao
     @Query("SELECT * FROM film_table ORDER BY id")
     fun filmListSortedById(): LiveData<List<FilmData>>    //usando liveData para att em tempo real
+
+    @Query("SELECT count(*) FROM film_table")
+    fun getFilmsCount(): Int
 }

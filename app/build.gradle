@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    // Base
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
@@ -34,9 +35,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+
+    // Test
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation "org.robolectric:robolectric:4.0.2"
 
     /** ViewModel and LiveData */
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
@@ -47,13 +51,13 @@ dependencies {
     //implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     // alternatively - Lifecycles only (no ViewModel or LiveData). Some UI AndroidX libraries use this lightweight import for Lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
-    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     // For Kotlin use kapt instead of annotationProcessor
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
     /** Room */
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
     // For Kotlin use kapt instead of annotationProcessor
+    kapt "androidx.room:room-compiler:$room_version"
 
     /** Coroutines */
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
@@ -66,6 +70,8 @@ dependencies {
 
     /** RecyclerView */
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    // CardView
+    implementation 'androidx.cardview:cardview:1.0.0'
 
     /** Retrofit */
     implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
@@ -74,7 +80,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$version_retrofit"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$version_retrofit_coroutines_adapter"
 
-    // Moshi
+    /** Moshi */
     implementation "com.squareup.moshi:moshi:$version_moshi"
     implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
     // Retrofit with Moshi Converter
@@ -83,5 +89,4 @@ dependencies {
     /** Glide */
     implementation "com.github.bumptech.glide:glide:$version_glide"
     annotationProcessor "com.github.bumptech.glide:glide:$version_glide"
-    implementation 'androidx.cardview:cardview:1.0.0'
 }
