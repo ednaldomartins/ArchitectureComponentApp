@@ -1,6 +1,5 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,15 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 
 import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.domain.viewmodel.FilmApiViewModel
-import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 import com.example.architecturecomponentapp.util.FilmApiStatus
 
-class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickListener {
+class ApiFilmListFragment: BaseFilmListFragment() {
 
     /********************************************************
      *  variaveis herdadas de BaseFilmListFragment:         *
@@ -33,7 +31,7 @@ class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickLi
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe, e instanciar views adicionais desse fragment
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(
+        filmViewModel = ViewModelProvider(activity!!, super.filmViewModelFactory).get(
             FilmApiViewModel::class.java)
         initViews(view!!)
         super.setViewModel(filmViewModel)
@@ -43,7 +41,7 @@ class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickLi
         connectionStatus()
 
         // observador da requiscao
-        filmViewModel.responseFilmList.observe(this, Observer {
+        filmViewModel.responseFilmList.observe(viewLifecycleOwner, Observer {
             // atulizar estados dos botoes de alterar paginas
             refreshPageButton(it.page, it.totalPages)
             // configurando adapter do RecyclerView
@@ -87,14 +85,14 @@ class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickLi
     }
 
     //  ao fechar o menu chamar pagina de destaques
-    override fun onOptionsMenuClosed(menu: Menu?) {
+    override fun onOptionsMenuClosed(menu: Menu) {
         filmViewModel.setPresentation(1)
         super.onOptionsMenuClosed(menu)
     }
 
     //  setar imagem de status da conexao sempre que o estado da conexao mudar
     private fun connectionStatus () {
-        filmViewModel.status.observe(this, Observer {
+        filmViewModel.status.observe(viewLifecycleOwner, Observer {
             if (it == FilmApiStatus.LOADING ) {
                 // ocultar recyclerview e mostrar imagem de carregamento
                 mFilmRecyclerView.visibility = View.GONE
@@ -113,16 +111,6 @@ class ApiFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickLi
                 mFilmRecyclerView.visibility = View.VISIBLE
             }
         })
-    }
-
-    //  implementacao do click no item da listview
-    override fun onFilmClick(filmId: Long?) {
-        val intent = Intent(activity, FilmDetailsActivity::class.java)
-        intent.putExtra("filmId", filmId)
-        // verificar se esta nos favoritos do database do usuario ->  isFavorite = true | false ?
-        val isFavorite: Boolean = filmViewModel.isFavoriteFilm(filmId!!)
-        intent.putExtra("favorite", isFavorite)
-        startActivity( intent )
     }
 
 }

@@ -1,19 +1,17 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 
 import com.example.architecturecomponentapp.domain.entity.FilmsJson
 import com.example.architecturecomponentapp.domain.viewmodel.FilmDataViewModel
-import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
-class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickListener {
+class DataFilmListFragment: BaseFilmListFragment() {
 
     /********************************************************
      *  variaveis herdadas de BaseFilmListFragment:         *
@@ -28,17 +26,17 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        filmViewModel = ViewModelProviders.of(activity!!, super.filmViewModelFactory).get(
+        filmViewModel = ViewModelProvider(activity!!, super.filmViewModelFactory).get(
             FilmDataViewModel::class.java)
         super.setViewModel(filmViewModel)
 
         //  Quando houver alteracao no database, a lista de apresentacao deve ser atualizada
-        filmViewModel.filmsDataBase?.observe(this, Observer {
+        filmViewModel.filmsDataBase?.observe(viewLifecycleOwner, Observer {
             filmViewModel.setPresentationDatabase()
         })
 
         //  Quando a lista de apresentacao for atualizada, o recyclerview tambem deve ser atualizado
-        filmViewModel.presentationFilmList?.observe(this, Observer {
+        filmViewModel.presentationFilmList?.observe(viewLifecycleOwner, Observer {
             refreshPageButton(filmViewModel.actualPage, filmViewModel.totalPages)
             // configurando adapter do RecyclerView
             filmListAdapter = FilmListAdapter(
@@ -73,14 +71,6 @@ class DataFilmListFragment: BaseFilmListFragment(), FilmListAdapter.OnFilmClickL
         // esconder teclado
         mSearchView.clearFocus()
         return true
-    }
-
-    //  implementacao do click no item da listview
-    override fun onFilmClick(filmId: Long?) {
-        val intent = Intent(activity, FilmDetailsActivity::class.java)
-        intent.putExtra("filmId", filmId)
-        intent.putExtra("favorite", true)
-        startActivity( intent )
     }
 
 }

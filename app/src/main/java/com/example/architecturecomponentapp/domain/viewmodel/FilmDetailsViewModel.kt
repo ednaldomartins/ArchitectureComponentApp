@@ -89,7 +89,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) 
     }
 
     // retornar film buscado pelo ID
-    fun getFilm (id: Long): FilmData {
+    fun getFilmDatabase (id: Long): FilmData {
         return runBlocking {
             withContext(Dispatchers.IO) {
                 databaseDao.get(id)
@@ -109,7 +109,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) 
             // se nao estiver marcado como favorito e estiver no database
             else if (!_isFavorite!! && inDatabase) {
                 //  pegar film diretamente do database para ter o mesmo objeto.
-                val deleteFilm = this.getFilm(it.id)
+                val deleteFilm = this.getFilmDatabase(it.id)
                 deleteFilm(deleteFilm)
             }
         }
@@ -140,7 +140,7 @@ class FilmDetailsViewModel (private val databaseDao: FilmDao, app: Application) 
     }
 
     // verificar se o filme esta no database
-    private fun isFavoriteFilm (id: Long) : Boolean {
+    fun isFavoriteFilm (id: Long) : Boolean {
         var result = false
         runBlocking {
             withContext(Dispatchers.IO) {

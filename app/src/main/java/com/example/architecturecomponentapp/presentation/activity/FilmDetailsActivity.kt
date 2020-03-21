@@ -112,21 +112,20 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
             )
         viewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmDetailsViewModel::class.java)
 
-        // se film for nulo, vamos recuperar o film e setar os valores da intent
+        //  se film for nulo, vamos recuperar o film
         if (viewModel.film == null) {
-            viewModel.setIsFavorite( intent.getBooleanExtra("favorite", false) )
-            viewModel.setId( intent.getLongExtra("filmId", -1L) )
-            // se for favorito, recuperar do DB, senao da API
-            if (viewModel.isFavorite!!) {
-                viewModel.setFilm( viewModel.getFilm( viewModel.filmId!! ) )
-            }
-            else {
+            //  seta os valores na viewmodel
+            viewModel.setId( intent.getLongExtra("filmId", -1L ) )
+            viewModel.setIsFavorite( viewModel.isFavoriteFilm( viewModel.filmId!! ) )
+            //  verificar se esta no banco de dados
+            if ( viewModel.isFavorite!! )
+                viewModel.setFilm( viewModel.getFilmDatabase( viewModel.filmId!! ) )
+            else
                 viewModel.requestFilmApiService( viewModel.filmId!! )
-            }
         }
-
         //  enviar o lifecycle da nova activity construida/reconstruida
         viewModel.setLifecycle(this.lifecycle)
+
 
     }
 

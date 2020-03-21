@@ -1,5 +1,6 @@
 package com.example.architecturecomponentapp.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
@@ -14,6 +15,7 @@ import com.example.architecturecomponentapp.R
 import com.example.architecturecomponentapp.data.database.local.FilmDatabase
 import com.example.architecturecomponentapp.domain.viewmodel.FilmListViewModel
 import com.example.architecturecomponentapp.domain.viewmodel.FilmViewModelFactory
+import com.example.architecturecomponentapp.presentation.activity.FilmDetailsActivity
 import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 
 /**
@@ -22,7 +24,9 @@ import com.example.architecturecomponentapp.presentation.adapter.FilmListAdapter
 open class BaseFilmListFragment :
     Fragment(),
     SwipeRefreshLayout.OnRefreshListener,
-    SearchView.OnQueryTextListener, View.OnClickListener {
+    SearchView.OnQueryTextListener,
+    View.OnClickListener,
+    FilmListAdapter.OnFilmClickListener {
 
     //  view layout
     protected lateinit var mFilmRecyclerView: RecyclerView
@@ -91,9 +95,9 @@ open class BaseFilmListFragment :
     }
 
     //  criacao do menu pelo fragment
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_main, menu)
-        val mMenuSearchItem: MenuItem? = menu?.findItem(R.id.search_menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        val mMenuSearchItem: MenuItem? = menu.findItem(R.id.search_menu)
         mSearchView = mMenuSearchItem?.actionView as SearchView
         mSearchView.setOnQueryTextListener(this)
         super.onCreateOptionsMenu(menu, inflater)
@@ -148,6 +152,12 @@ open class BaseFilmListFragment :
                 }
             }
         }
+    }
+
+    override fun onFilmClick(filmId: Long?) {
+        val intent = Intent(activity, FilmDetailsActivity::class.java)
+        intent.putExtra("filmId", filmId)
+        startActivity( intent )
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
