@@ -52,18 +52,17 @@ open class BaseFilmListFragment :
         //  criar frabrica de ViewModels
         val application = requireNotNull(this.activity).application
         val dataSource = FilmDatabase.getInstance(application).filmDao
-        filmViewModelFactory =
-            FilmViewModelFactory(
-                dataSource,
-                application
-            )
+        filmViewModelFactory = FilmViewModelFactory(dataSource, application)
 
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // configurando RecyclerView
         val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(activity)
         mFilmRecyclerView.layoutManager = layoutManager
         mFilmRecyclerView.setHasFixedSize(true)
-
-        return view
     }
 
     //  pegar referencia da viewmodel da classe filha para poder controlar os botoes de navegacao de pagina
