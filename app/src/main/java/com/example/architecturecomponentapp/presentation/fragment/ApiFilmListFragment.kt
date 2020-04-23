@@ -31,13 +31,20 @@ class ApiFilmListFragment: BaseFilmListFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // recuperar view da super classe, e instanciar views adicionais desse fragment
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        filmViewModel = ViewModelProvider(activity!!, super.filmViewModelFactory).get(
-            FilmApiViewModel::class.java)
-        initViews(view!!)
+
+        filmViewModel = ViewModelProvider(activity!!, super.filmViewModelFactory).get(FilmApiViewModel::class.java)
         super.setViewModel(filmViewModel)
 
+        initViews(view!!)
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         // chamar lista de filmes da api
-        filmViewModel.setPresentation()
+        //filmViewModel.setPresentation()
         connectionStatus()
 
         // observador da requiscao
@@ -51,7 +58,32 @@ class ApiFilmListFragment: BaseFilmListFragment() {
             }
         })
 
-        return view
+    }
+
+    override fun onResume() {
+        //  se estado do recyclerView nao for nulo recupera-lo
+        if (filmViewModel.recyclerViewState != null) {
+            mFilmRecyclerView.layoutManager?.onRestoreInstanceState(filmViewModel.recyclerViewState)
+        }
+        else {
+            if (filmViewModel.responseFilmList.value != null) {
+                filmListAdapter = FilmListAdapter(context = activity, filmListJson = filmViewModel.responseFilmList.value!!.movies!!, onFilmClickListener = this)
+                mFilmRecyclerView.adapter = filmListAdapter
+            }
+            else {
+                filmViewModel.setPresentation()
+                connectionStatus()
+            }
+        }
+
+        super.onResume()
+    }
+
+    override fun onStop() {
+        mFilmRecyclerView.layoutManager?.let {
+            filmViewModel.setRecyclerViewState(it.onSaveInstanceState())
+        }
+        super.onStop()
     }
 
     //  view para imageview que mostra status da conexao
