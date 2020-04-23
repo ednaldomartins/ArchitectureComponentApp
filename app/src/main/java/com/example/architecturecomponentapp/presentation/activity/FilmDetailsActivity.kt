@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 
 import kotlinx.android.synthetic.main.activity_film_details.*
 
@@ -38,6 +38,10 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
         //  iniciar view e viewmodel
         initViews()
         initViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         if (viewModel.isFavorite!!) {
             film_details_favorite.background = getDrawable(R.drawable.ic_star_favorite_32dp)
@@ -59,6 +63,41 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
                 })
             }
         }
+
+    }
+
+    private fun initViews() {
+        favoriteButton = film_details_favorite
+        favoriteButton.setOnClickListener(this)
+        favoriteButton.isClickable = false
+        homepageText = film_detail_homepage
+        homepageText.setOnClickListener(this)
+    }
+
+    private fun initViewModel() {
+        // recuperar fonte de dados
+        val application = requireNotNull(this).application
+        val dataSource = FilmDatabase.getInstance(application).filmDao
+        val filmViewModelFactory =
+            FilmViewModelFactory(
+                dataSource,
+                application
+            )
+        viewModel = ViewModelProvider(this, filmViewModelFactory).get(FilmDetailsViewModel::class.java)
+
+        //  se film for nulo, vamos recuperar o film
+        if (viewModel.film == null) {
+            //  seta os valores na viewmodel
+            viewModel.setId( intent.getLongExtra("filmId", -1L ) )
+            viewModel.setIsFavorite( viewModel.isFavoriteFilm( viewModel.filmId!! ) )
+            //  verificar se esta no banco de dados
+            if ( viewModel.isFavorite!! )
+                viewModel.setFilm( viewModel.getFilmDatabase( viewModel.filmId!! ) )
+            else
+                viewModel.requestFilmApiService( viewModel.filmId!! )
+        }
+        //  enviar o lifecycle da nova activity construida/reconstruida
+        viewModel.setLifecycle(this.lifecycle)
     }
 
     private fun submitDetails(filmData: FilmData) {
@@ -90,42 +129,6 @@ class FilmDetailsActivity : AppCompatActivity(), View.OnClickListener, Lifecycle
         film_detail_homepage.text = filmData.homepage
         //  tornar botão favorito clicavel apenas quando o filme for buscado com sucesso
         favoriteButton.isClickable = (viewModel.film!!.id != -1L)
-
-    }
-
-    private fun initViews() {
-        favoriteButton = film_details_favorite
-        favoriteButton.setOnClickListener(this)
-        favoriteButton.isClickable = false
-        homepageText = film_detail_homepage
-        homepageText.setOnClickListener(this)
-    }
-
-    private fun initViewModel() {
-        // recuperar fonte de dados
-        val application = requireNotNull(this).application
-        val dataSource = FilmDatabase.getInstance(application).filmDao
-        val filmViewModelFactory =
-            FilmViewModelFactory(
-                dataSource,
-                application
-            )
-        viewModel = ViewModelProviders.of(this, filmViewModelFactory).get(FilmDetailsViewModel::class.java)
-
-        //  se film for nulo, vamos recuperar o film
-        if (viewModel.film == null) {
-            //  seta os valores na viewmodel
-            viewModel.setId( intent.getLongExtra("filmId", -1L ) )
-            viewModel.setIsFavorite( viewModel.isFavoriteFilm( viewModel.filmId!! ) )
-            //  verificar se esta no banco de dados
-            if ( viewModel.isFavorite!! )
-                viewModel.setFilm( viewModel.getFilmDatabase( viewModel.filmId!! ) )
-            else
-                viewModel.requestFilmApiService( viewModel.filmId!! )
-        }
-        //  enviar o lifecycle da nova activity construida/reconstruida
-        viewModel.setLifecycle(this.lifecycle)
-
 
     }
 
