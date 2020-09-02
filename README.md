@@ -20,6 +20,11 @@ Esses componentes podem trazer diversos benefícios. As principaiscaracterístic
 
 ![image](https://user-images.githubusercontent.com/21205709/83975004-99c4ef00-a8c7-11ea-83ea-40a5262712f0.png)
 
+<img src=https://user-images.githubusercontent.com/21205709/92013340-fea3b000-ed23-11ea-8de2-20999d958b38.png width="200">
+
+### Componente Navigation (Single Activity)
+
+<img src=https://user-images.githubusercontent.com/21205709/92013046-a10f6380-ed23-11ea-816c-9a22f87bd332.png width="720">
 
 ### Telas do Aplicativo
 
@@ -45,7 +50,7 @@ Esses componentes podem trazer diversos benefícios. As principaiscaracterístic
 
 #### Cada filme contém diversas informações, como despesas, elenco, ano de lançamento, entre outras.
 
-<img src=https://user-images.githubusercontent.com/21205709/92011132-04e45d00-ed21-11ea-912f-57e563dc6059.png width="250">  <img src=https://user-images.githubusercontent.com/21205709/92011138-06158a00-ed21-11ea-9f35-a1a78182719f.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92011140-07df4d80-ed21-11ea-99a5-856fe9c90246.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92011150-0ada3e00-ed21-11ea-9e43-9e4696f0d778.png width="250">      
+<img src=https://user-images.githubusercontent.com/21205709/92011132-04e45d00-ed21-11ea-912f-57e563dc6059.png width="250">  <img src=https://user-images.githubusercontent.com/21205709/92011138-06158a00-ed21-11ea-9f35-a1a78182719f.png width="250">  <img src=https://user-images.githubusercontent.com/21205709/92011140-07df4d80-ed21-11ea-99a5-856fe9c90246.png width="250">
 
 #### Os cards dos atores te direcionam para uma outra página contendo informações, como partipações do ator em outros filmes.
 
@@ -53,8 +58,7 @@ Esses componentes podem trazer diversos benefícios. As principaiscaracterístic
 
 #### Tela de comentários dos usuários do TMDB
 
-<img src=https://user-images.githubusercontent.com/21205709/92011155-0ca40180-ed21-11ea-9723-e88868053fd6.png width="250">  
-<img src=https://user-images.githubusercontent.com/21205709/92011435-6f959880-ed21-11ea-94fd-6d8f1a3ebb9c.png width="250">
+<img src=https://user-images.githubusercontent.com/21205709/92011155-0ca40180-ed21-11ea-9723-e88868053fd6.png width="250">  <img src=https://user-images.githubusercontent.com/21205709/92011435-6f959880-ed21-11ea-94fd-6d8f1a3ebb9c.png width="250">
 
 #### Tela do Usuário e configurações
 
