@@ -29,31 +29,36 @@ Esses componentes podem trazer diversos benefícios. As principaiscaracterístic
 
 | Página Inicial | Página de Busca na API | Página de Favoritos |
 |----------------|------------------------|---------------------|
-| <img src=https://user-images.githubusercontent.com/21205709/83977336-3c846a00-a8d6-11ea-9f66-f124ea14d5ba.jpg width="250"> | <img src=https://user-images.githubusercontent.com/21205709/83977657-92f2a800-a8d8-11ea-8c7d-519349965982.jpg width="250"> | <img src=https://user-images.githubusercontent.com/21205709/83977671-b61d5780-a8d8-11ea-9c79-2a207284d878.jpg width="250"> |
+| <img src=https://user-images.githubusercontent.com/21205709/92007795-c351b300-ed1c-11ea-9c25-dcdf85d1b0b0.png width="250"> | <img src=https://user-images.githubusercontent.com/21205709/92010253-f9446680-ed1f-11ea-9c80-947c8579f278.png width="250"> | <img src=https://user-images.githubusercontent.com/21205709/92008108-188dc480-ed1d-11ea-841d-5735eb8dccbe.png width="250"> |
 
 #### Buscando filmes na API através do nome do filme. Também é possível realizar buscas na lista dos filmes favoritos que estão guardados na memória do dispositivo.
 
-<img src=https://user-images.githubusercontent.com/21205709/83977703-f8df2f80-a8d8-11ea-9c0b-ef33c46e006b.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/83978184-2aa5c580-a8dc-11ea-887b-0ddc71b63aef.jpg width="250">
+<img src=https://user-images.githubusercontent.com/21205709/92008210-3f4bfb00-ed1d-11ea-9e38-f92a98ec0fcd.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92010540-49bbc400-ed20-11ea-8e82-19f593f7ad5c.png width="250">
 
 #### Ao clicar em _Ver Mais_ é possível encontrar mais filmes em uma lista imensa de acordo com a categoria selecionada.
 
-<img src=https://user-images.githubusercontent.com/21205709/83977336-3c846a00-a8d6-11ea-9f66-f124ea14d5ba.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/83977853-e1547680-a8d9-11ea-929c-41b4bacfac19.jpg width="250">
+<img src=https://user-images.githubusercontent.com/21205709/92007795-c351b300-ed1c-11ea-9c25-dcdf85d1b0b0.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92010716-7ff94380-ed20-11ea-850c-30111b6707b0.png width="250">
 
 #### Você pode ordenar pela categoria, ou filtrar a lista de acordo com o gênero.
 
-<img src=https://user-images.githubusercontent.com/21205709/83977892-1f519a80-a8da-11ea-8e54-4f8d9e41e1f9.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/83977933-62ac0900-a8da-11ea-8b7b-c526ed878961.jpg width="250">
+<img src=https://user-images.githubusercontent.com/21205709/92010835-a919d400-ed20-11ea-848b-fc82991bf4af.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92010840-aa4b0100-ed20-11ea-9293-5513e26e8b4c.png width="250">
 
 #### Cada filme contém diversas informações, como despesas, elenco, ano de lançamento, entre outras.
 
-<img src=https://user-images.githubusercontent.com/21205709/83977954-8ff8b700-a8da-11ea-8c68-e1c847b1d42d.jpg width="250">  <img src=https://user-images.githubusercontent.com/21205709/83977957-91c27a80-a8da-11ea-9ac2-54ec984db926.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/83977964-9dae3c80-a8da-11ea-9195-8ad9883a4866.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/83977959-938c3e00-a8da-11ea-8a07-f1a4ca588e8e.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/83977962-99821f00-a8da-11ea-87b5-f802458ee49e.jpg width="250">    <img src=https://user-images.githubusercontent.com/21205709/84289770-4944d000-ab19-11ea-8a25-1be682707243.jpg width="250">   
+<img src=https://user-images.githubusercontent.com/21205709/92011132-04e45d00-ed21-11ea-912f-57e563dc6059.png width="250">  <img src=https://user-images.githubusercontent.com/21205709/92011138-06158a00-ed21-11ea-9f35-a1a78182719f.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92011140-07df4d80-ed21-11ea-99a5-856fe9c90246.png width="250">    <img src=https://user-images.githubusercontent.com/21205709/92011150-0ada3e00-ed21-11ea-9e43-9e4696f0d778.png width="250">      
 
 #### Os cards dos atores te direcionam para uma outra página contendo informações, como partipações do ator em outros filmes.
 
-<img src=https://user-images.githubusercontent.com/21205709/83978108-84f25680-a8db-11ea-93b0-fe005bb87334.jpg width="250">
+<img src=https://user-images.githubusercontent.com/21205709/92011735-e337a580-ed21-11ea-82c1-96a86f598005.png width="250">
 
 #### Tela de comentários dos usuários do TMDB
 
-<img src=https://user-images.githubusercontent.com/21205709/83978069-48bef600-a8db-11ea-95e9-eb89b1a84000.jpg width="250">
+<img src=https://user-images.githubusercontent.com/21205709/92011155-0ca40180-ed21-11ea-9723-e88868053fd6.png width="250">  
+<img src=https://user-images.githubusercontent.com/21205709/92011435-6f959880-ed21-11ea-94fd-6d8f1a3ebb9c.png width="250">
+
+#### Tela do Usuário e configurações
+
+<img src=https://user-images.githubusercontent.com/21205709/92011857-0eba9000-ed22-11ea-90ab-11fa183dea02.png width="250">  <img src=https://user-images.githubusercontent.com/21205709/92011860-0febbd00-ed22-11ea-8520-2573b3292870.png width="250">
 
 ### Referências
 
